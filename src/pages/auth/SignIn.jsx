@@ -35,7 +35,7 @@ export default function SignIn() {
       className="poppins"
       sx={{
         minHeight: "100vh",
-        paddingBlock: "20px",
+        // paddingBlock: "20px",
         overflow: "hidden",
       }}
     >
@@ -112,27 +112,7 @@ export default function SignIn() {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        // inputProps={{
-                        //   "aria-label": "weight",
-                        // }}
                       />
-                      {/* <TextField
-                        variant="outlined"
-                        fullWidth
-                        size="small"
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        placeholder="Email"
-                        // autoFocus
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          "aria-label": "weight",
-                        }}
-                      /> */}
                     </FormControl>
                   </Grid>
                   <Grid item xs={12}>
@@ -224,7 +204,7 @@ export default function SignIn() {
                         },
                       }}
                       onClick={() => {
-                        navigate("/home/dashboard");
+                        navigate("/");
                       }}
                     >
                       Sign In

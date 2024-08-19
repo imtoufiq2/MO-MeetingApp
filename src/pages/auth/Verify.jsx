@@ -4,13 +4,90 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { FormControl, Stack } from "@mui/material";
-import { BootstrapInput } from "../../utils/Input/textfield";
+import { FormControl, Stack, TextField } from "@mui/material";
 import "./auth.css";
 import { useNavigate } from "react-router-dom";
+import ResponsiveImage from "../../components/Logo";
+import { useEffect, useRef, useState } from "react";
 
+let numberOfDigits = 4;
 export default function VerifyMobile() {
   const navigate = useNavigate();
+
+  const [otp, setOtp] = useState(new Array(numberOfDigits).fill(""));
+  const otpBoxReference = useRef([]);
+  const inputRefs = useRef([]);
+
+  function handlePaste(e, index) {
+    e.preventDefault();
+    const pastedOtp = e.clipboardData.getData("text").trim();
+    if (/^\d+$/.test(pastedOtp)) {
+      if (pastedOtp.length === numberOfDigits) {
+        const otpDigits = pastedOtp.split("");
+        setOtp(otpDigits);
+        if (index < numberOfDigits - 1) {
+          otpBoxReference.current[index + 1].focus();
+        }
+      } else {
+        // toast("Please enter exactly 6 digits for the OTP", {
+        //   icon: "⚠️",
+        //   iconTheme: {
+        //     primary: "#FFA500",
+        //     secondary: "#000000",
+        //   },
+        //   style: {
+        //     borderRadius: "10px",
+        //     background: "#FFA500",
+        //     color: "#fff",
+        //   },
+        // });
+      }
+    } else {
+      // toast("Please enter only numeric characters for the OTP", {
+      //   icon: "⚠️",
+      //   iconTheme: {
+      //     primary: "#FFA500",
+      //     secondary: "#000000",
+      //   },
+      //   style: {
+      //     borderRadius: "10px",
+      //     background: "#FFA500",
+      //     color: "#fff",
+      //   },
+      // });
+    }
+  }
+
+  function handleChange(value, index) {
+    if (value.length <= 1 && !isNaN(value) && value !== "e") {
+      let newArr = [...otp];
+      newArr[index] = value;
+      setOtp(newArr);
+
+      if (value && index < numberOfDigits - 1) {
+        otpBoxReference.current[index + 1].focus();
+      }
+    } else if (value.length > 1) {
+      let newDigit = value.charAt(value.length - 1);
+      let newArr = [...otp];
+      newArr[index] = newDigit;
+      setOtp(newArr);
+
+      if (newDigit && index < numberOfDigits - 1) {
+        otpBoxReference.current[index + 1].focus();
+      }
+    }
+  }
+
+  function handleBackspaceAndEnter(e, index) {
+    if (e.key === "Backspace" && !e.target.value && index > 0) {
+      otpBoxReference.current[index].value = "";
+      otpBoxReference.current[index - 1].focus();
+    }
+    if (e.key === "Enter" && e.target.value && index < numberOfDigits - 1) {
+      otpBoxReference.current[index + 1].focus();
+    }
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -21,13 +98,16 @@ export default function VerifyMobile() {
     });
   };
 
+  useEffect(() => {
+    inputRefs.current[0]?.focus();
+  }, []);
   return (
     // <AuthWrapper>
     <Box
       className="poppins"
       sx={{
         minHeight: "100vh",
-        paddingBlock: "20px",
+        // paddingBlock: "20px",
         overflow: "hidden",
       }}
     >
@@ -41,15 +121,7 @@ export default function VerifyMobile() {
         }}
       >
         <Grid container spacing={3}>
-          <Grid item xs={12} textAlign="center">
-            {/* <Logo /> */}
-            <img
-              src="https://imgs.search.brave.com/-NLPufxpYH-GyQyrpsElVt4626cidyyBEX9hvyVjpA0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dmFsdWVyZXNlYXJj/aG9ubGluZS5jb20v/Y29udGVudC1hc3Nl/dHMvaW1hZ2VzL2Z1/bmQtbmV3cy1tb3Rp/bGFsLW9zd2FsX193/MTIwX19oNjhfXy5q/cGc"
-              alt="logo"
-              className=""
-              style={{ borderRadius: "10px" }}
-            />
-          </Grid>
+          <ResponsiveImage />
 
           <Grid item xs={12}>
             <Container component="main" maxWidth="2xl">
@@ -65,7 +137,7 @@ export default function VerifyMobile() {
                     variant="h5"
                     sx={{ color: "primary.main", fontWeight: 500 }}
                   >
-                    Enter Password
+                    Enter OTP
                   </Typography>
                 </Stack>
                 <Grid
@@ -75,12 +147,11 @@ export default function VerifyMobile() {
                   direction="column"
                   onSubmit={handleSubmit}
                   noValidate
-                  // sx={{ mt: 1, width: { md: "30%", xs: "100%" } }}
                   sx={{
                     mt: 1,
                     width: {
-                      xs: "100%", // 100% width for extra-small screens
-                      sm: "450px", // 30% width for medium screens and larger
+                      xs: "100%",
+                      sm: "400px",
                     },
                   }}
                 >
@@ -94,25 +165,43 @@ export default function VerifyMobile() {
                       }}
                     >
                       <Box>
-                        <Typography
-                          variant="h3"
-                          component="h3"
-                          className="label d-flex items-center"
+                        <Stack
+                          container
+                          spacing={2}
+                          direction="row"
+                          justifyContent="space-between"
                         >
-                          Mobile
-                          <sup className="asc">*</sup>
-                        </Typography>
-                        <BootstrapInput
-                          fullWidth
-                          id="email"
-                          size="small"
-                          label="Email Address"
-                          name="email"
-                          placeholder="Enter Registered Mobile Number"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                        />
+                          {otp.map((digit, index) => (
+                            <Grid item key={index}>
+                              <TextField
+                                key={index}
+                                id={`otp-input-${index}`}
+                                value={digit}
+                                inputMode="numeric"
+                                maxLength={1}
+                                placeholder="•"
+                                onPaste={(e) => handlePaste(e, index)}
+                                onChange={(e) =>
+                                  handleChange(e.target.value, index)
+                                }
+                                onKeyUp={(e) =>
+                                  handleBackspaceAndEnter(e, index)
+                                }
+                                ref={(reference) =>
+                                  (otpBoxReference.current[index] = reference)
+                                }
+                                variant="outlined"
+                                sx={{ maxWidth: "60px" }}
+                                inputProps={{
+                                  maxLength: 1,
+                                  style: {
+                                    textAlign: "center",
+                                  },
+                                }}
+                              />
+                            </Grid>
+                          ))}
+                        </Stack>
                       </Box>
 
                       <Box

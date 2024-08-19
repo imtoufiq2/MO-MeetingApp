@@ -27,7 +27,7 @@ export default function ResetPassword() {
       className="poppins"
       sx={{
         minHeight: "100vh",
-        paddingBlock: "20px",
+        // paddingBlock: "20px",
         overflow: "hidden",
       }}
     >
@@ -153,6 +153,7 @@ export default function ResetPassword() {
                         </Button>
 
                         <Button
+                          onClick={() => navigate("/verify-otp")}
                           fullWidth
                           variant="contained"
                           sx={{

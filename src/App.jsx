@@ -1,6 +1,6 @@
 import {
   createBrowserRouter,
-  Navigate,
+  // Navigate,
   RouterProvider,
 } from "react-router-dom";
 import ThemeCustomization from "./themes";
@@ -8,25 +8,20 @@ import ThemeCustomization from "./themes";
 import SignIn from "./pages/auth/SignIn";
 import ResetPassword from "./pages/auth/reset_password";
 import Verify from "./pages/auth/Verify";
+import AssociatedCompanies from "./pages/AssociatedCompanies";
+import Department from "./pages/Department";
+import Reports from "./pages/Reports";
+import Meetings from "./pages/Meetings";
+// import { PrivateRoute } from "./pages/private-route";
 
 const appLayout = createBrowserRouter([
   {
     path: `/`,
-    // element: (
-    //   // <AuthGuard>
-    //   // </AuthGuard>
-    //   // <CommonLayout />
-    //   <>Heyyy</>
-    // ),
     children: [
       {
         path: "/",
-        element: <Navigate to="/sign-in" />,
+        element: <AssociatedCompanies />,
       },
-      // {
-      //   path: "sign-up",
-      //   element: <SignUp />,
-      // },
       {
         path: "sign-in",
         element: <SignIn />,
@@ -39,20 +34,20 @@ const appLayout = createBrowserRouter([
         path: "forgot-password",
         element: <ResetPassword />,
       },
-    ],
-  },
-  {
-    path: "/",
-    children: [
       {
-        path: "home",
-        // element: <Layout />,
-        children: [
-          {
-            path: "dashboard",
-            element: <></>,
-          },
-        ],
+        path: "department/:id",
+        // element: <PrivateRoute element={<Department />} />,
+        element: <Department />,
+      },
+      {
+        path: "meetings/:id",
+        // element: <PrivateRoute element={<Meetings />} />,
+        element: <Meetings />,
+      },
+      {
+        path: "reports/:id",
+        // element: <PrivateRoute element={<Reports />} />,
+        element: <Reports />,
       },
     ],
   },
