@@ -34,11 +34,7 @@ const appLayout = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: (
-          <PrivateRoute>
-            <AssociatedCompanies />
-          </PrivateRoute>
-        ),
+        element: <AssociatedCompanies />,
       },
       {
         path: "sign-in",
@@ -54,27 +50,15 @@ const appLayout = createBrowserRouter([
       },
       {
         path: "department/:id",
-        element: (
-          <PrivateRoute>
-            <Department />
-          </PrivateRoute>
-        ),
+        element: <Department />,
       },
       {
         path: "meetings/:id",
-        element: (
-          <PrivateRoute>
-            <Meetings />
-          </PrivateRoute>
-        ),
+        element: <Meetings />,
       },
       {
         path: "reports/:id",
-        element: (
-          <PrivateRoute>
-            <Reports />
-          </PrivateRoute>
-        ),
+        element: <Reports />,
       },
     ],
   },
