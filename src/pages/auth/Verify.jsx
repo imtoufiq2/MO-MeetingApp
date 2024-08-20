@@ -231,6 +231,7 @@ export default function VerifyMobile() {
 
                         <Button
                           fullWidth
+                          onClick={() => navigate("/")}
                           variant="contained"
                           sx={{
                             backgroundColor: "primary.main",
