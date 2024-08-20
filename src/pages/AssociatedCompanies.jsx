@@ -35,6 +35,10 @@ const AssociatedCompanies = () => {
           overflow: "hidden",
           maxWidth: "592px",
           margin: "auto",
+          marginTop: {
+            xs: "24px",
+            lg: "32px",
+          },
         }}
       >
         <MuiList listToShow={filteredList} nextRoute="department" />

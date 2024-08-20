@@ -61,7 +61,6 @@ export default function SearchAppBar({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log("asdfasfd", location?.pathname);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">

@@ -1,16 +1,21 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-// import { getData } from "../../utils/Crypto";
+import PropTypes from "prop-types";
+import { Navigate, useLocation } from "react-router-dom";
 
-const PrivateRoute = () => {
-  const location = useLocation();
-  const token="tew"
-//   const token = getData("userData")?.access_token;
+const PrivateRoute = ({ element }) => {
+  const userToken = localStorage.getItem('userToken'); // Retrieve the token from local storage
+  const location = useLocation(); // To redirect back after sign-in
 
-  return token ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
-  );
+  // Redirect to sign-in and remember the attempted route
+  if (!userToken) {
+    localStorage.setItem('redirectAfterSignin', JSON.stringify(location.pathname));
+    return <Navigate to="/sign-in" replace />;
+  }
+
+  return element;
 };
 
-export { PrivateRoute };
+PrivateRoute.propTypes = {
+  element: PropTypes.element.isRequired,
+};
+
+export default PrivateRoute;

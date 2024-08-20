@@ -10,11 +10,12 @@ import { useNavigate } from "react-router-dom";
 import ResponsiveImage from "../../components/Logo";
 import { useEffect, useRef, useState } from "react";
 
-let numberOfDigits = 4;
+const numberOfDigits = 4;
 export default function VerifyMobile() {
   const navigate = useNavigate();
 
   const [otp, setOtp] = useState(new Array(numberOfDigits).fill(""));
+
   const otpBoxReference = useRef([]);
   const inputRefs = useRef([]);
 
@@ -115,14 +116,10 @@ export default function VerifyMobile() {
         container
         direction="column"
         justifyContent="center"
-        sx={{
-          minHeight: "100vh",
-          minWidth: "100vw",
-        }}
+        sx={{ minHeight: "100vh", minWidth: "100vw" }}
       >
         <Grid container spacing={3}>
           <ResponsiveImage />
-
           <Grid item xs={12}>
             <Container component="main" maxWidth="2xl">
               <Box
@@ -147,26 +144,17 @@ export default function VerifyMobile() {
                   direction="column"
                   onSubmit={handleSubmit}
                   noValidate
-                  sx={{
-                    mt: 1,
-                    width: {
-                      xs: "100%",
-                      sm: "400px",
-                    },
-                  }}
+                  sx={{ mt: 1, width: { xs: "100%", sm: "400px" } }}
                 >
                   <Grid item xs={12}>
                     <FormControl
                       id="_form_control"
                       variant="standard"
                       fullWidth
-                      sx={{
-                        gap: { xs: "20px", md: "28px" },
-                      }}
+                      sx={{ gap: { xs: "20px", md: "28px" } }}
                     >
                       <Box>
                         <Stack
-                          container
                           spacing={2}
                           direction="row"
                           justifyContent="space-between"
@@ -174,7 +162,6 @@ export default function VerifyMobile() {
                           {otp.map((digit, index) => (
                             <Grid item key={index}>
                               <TextField
-                                key={index}
                                 id={`otp-input-${index}`}
                                 value={digit}
                                 inputMode="numeric"
@@ -191,12 +178,20 @@ export default function VerifyMobile() {
                                   (otpBoxReference.current[index] = reference)
                                 }
                                 variant="outlined"
-                                sx={{ maxWidth: "60px" }}
+                                sx={{
+                                  maxWidth: "60px",
+                                  "& .MuiOutlinedInput-root": {
+                                    "& fieldset": {
+                                      borderColor: "gray",
+                                    },
+                                    "&:hover fieldset": {
+                                      borderColor: "orange",
+                                    },
+                                  },
+                                }}
                                 inputProps={{
                                   maxLength: 1,
-                                  style: {
-                                    textAlign: "center",
-                                  },
+                                  style: { textAlign: "center" },
                                 }}
                               />
                             </Grid>
@@ -227,10 +222,7 @@ export default function VerifyMobile() {
                               border: "none",
                               backgroundColor: "secondary.light",
                             },
-                            "&:focus": {
-                              border: "none",
-                              outline: "none",
-                            },
+                            "&:focus": { border: "none", outline: "none" },
                           }}
                           onClick={() => navigate("/sign-in")}
                         >
@@ -243,17 +235,9 @@ export default function VerifyMobile() {
                           sx={{
                             backgroundColor: "primary.main",
                             borderColor: "primary.main",
-                            "&:hover": {
-                              borderColor: "primary.main",
-                            },
-                            "&:active": {
-                              border: "none",
-                              outline: "none",
-                            },
-                            "&:focus": {
-                              border: "none",
-                              outline: "none",
-                            },
+                            "&:hover": { borderColor: "primary.main" },
+                            "&:active": { border: "none", outline: "none" },
+                            "&:focus": { border: "none", outline: "none" },
                           }}
                         >
                           Submit

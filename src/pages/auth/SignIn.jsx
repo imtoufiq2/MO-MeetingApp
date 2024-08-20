@@ -109,9 +109,9 @@ export default function SignIn() {
                         label="Email Address"
                         name="email"
                         placeholder="Email"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
+                        // InputLabelProps={{
+                        //   shrink: true,
+                        // }}
                       />
                     </FormControl>
                   </Grid>
@@ -129,9 +129,9 @@ export default function SignIn() {
                         label="Password"
                         name="password"
                         placeholder="Password"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
+                        // InputLabelProps={{
+                        //   shrink: true,
+                        // }}
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton

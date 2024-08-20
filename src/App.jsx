@@ -1,10 +1,11 @@
 import {
   createBrowserRouter,
-  // Navigate,
+  Navigate,
   RouterProvider,
 } from "react-router-dom";
+import PropTypes from "prop-types";
+
 import ThemeCustomization from "./themes";
-// import { Layout } from "./layout/mainLayout";
 import SignIn from "./pages/auth/SignIn";
 import ResetPassword from "./pages/auth/reset_password";
 import Verify from "./pages/auth/Verify";
@@ -12,7 +13,20 @@ import AssociatedCompanies from "./pages/AssociatedCompanies";
 import Department from "./pages/Department";
 import Reports from "./pages/Reports";
 import Meetings from "./pages/Meetings";
-// import { PrivateRoute } from "./pages/private-route";
+
+function isUserAuthenticated() {
+  // return !!localStorage.getItem("authToken");
+  return true;
+}
+
+function PrivateRoute({ children }) {
+  const isUserAuthenticatedUser = isUserAuthenticated();
+  return isUserAuthenticatedUser ? children : <Navigate to="/sign-in" />;
+}
+// PropTypes validation for PrivateRoute
+PrivateRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 const appLayout = createBrowserRouter([
   {
@@ -20,7 +34,11 @@ const appLayout = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <AssociatedCompanies />,
+        element: (
+          <PrivateRoute>
+            <AssociatedCompanies />
+          </PrivateRoute>
+        ),
       },
       {
         path: "sign-in",
@@ -36,18 +54,27 @@ const appLayout = createBrowserRouter([
       },
       {
         path: "department/:id",
-        // element: <PrivateRoute element={<Department />} />,
-        element: <Department />,
+        element: (
+          <PrivateRoute>
+            <Department />
+          </PrivateRoute>
+        ),
       },
       {
         path: "meetings/:id",
-        // element: <PrivateRoute element={<Meetings />} />,
-        element: <Meetings />,
+        element: (
+          <PrivateRoute>
+            <Meetings />
+          </PrivateRoute>
+        ),
       },
       {
         path: "reports/:id",
-        // element: <PrivateRoute element={<Reports />} />,
-        element: <Reports />,
+        element: (
+          <PrivateRoute>
+            <Reports />
+          </PrivateRoute>
+        ),
       },
     ],
   },
@@ -59,15 +86,10 @@ const appLayout = createBrowserRouter([
 
 function App() {
   return (
-    <>
-      <ThemeCustomization>
-        {/* <ThemeProvider theme={theme}> */}
-        {/* <ToasterProvider> */}
-        <RouterProvider router={appLayout} />
-        {/* </ToasterProvider> */}
-        {/* </ThemeProvider> */}
-      </ThemeCustomization>
-    </>
+    <ThemeCustomization>
+      <RouterProvider router={appLayout} />
+    </ThemeCustomization>
   );
 }
+
 export default App;

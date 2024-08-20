@@ -12,7 +12,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import { useLocation, useNavigate } from "react-router-dom";
 import EmptyState from "./EmptyState";
 
-export const MuiList = ({ listToShow, showIcon, nextRoute }) => {
+export const MuiList = ({ listToShow, showIcon, nextRoute = "" }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -91,11 +91,7 @@ MuiList.propTypes = {
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
     })
-  ).isRequired,
+  ),
   showIcon: PropTypes.bool,
   nextRoute: PropTypes.string.isRequired,
-};
-
-MuiList.defaultProps = {
-  showIcon: false,
 };

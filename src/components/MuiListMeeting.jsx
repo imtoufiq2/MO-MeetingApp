@@ -23,7 +23,6 @@ export const MuiListMeeting = ({ listToShow }) => {
           flexDirection: "column",
         }}
       >
-        {console.log("itesadfasdas", listToShow?.[0])}
         {listToShow?.map((item) => (
           <ListItem
             onClick={() => navigate(`/reports/${item.id}`)}

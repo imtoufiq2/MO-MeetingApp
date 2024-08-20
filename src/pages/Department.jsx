@@ -30,11 +30,13 @@ const Department = () => {
         className="poppins"
         sx={{
           minHeight: "100vh",
-          // paddingBlock: "20px",
           overflow: "hidden",
-          //   backgroundColor: "red",
           maxWidth: "592px",
           margin: "auto",
+          marginTop: {
+            xs: "24px",
+            lg: "32px",
+          },
         }}
       >
         <MuiList listToShow={filteredList} nextRoute="meetings" />

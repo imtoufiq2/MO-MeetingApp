@@ -35,11 +35,13 @@ const Meetings = () => {
         className="poppins"
         sx={{
           minHeight: "100vh",
-          // paddingBlock: "20px",
           overflow: "hidden",
-
           maxWidth: "592px",
           margin: "auto",
+          marginTop: {
+            xs: "24px",
+            lg: "32px",
+          },
         }}
       >
         <MuiListMeeting listToShow={filteredList} />

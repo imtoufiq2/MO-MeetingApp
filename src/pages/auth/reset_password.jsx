@@ -113,9 +113,9 @@ export default function ResetPassword() {
                           label="Email Address"
                           name="email"
                           placeholder="Enter Registered Mobile Number"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
+                          // InputLabelProps={{
+                          //   shrink: true,
+                          // }}
                         />
                       </Box>
 
