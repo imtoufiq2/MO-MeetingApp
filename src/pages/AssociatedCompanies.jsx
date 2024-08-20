@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import BusinessIcon from "@mui/icons-material/Business";
 import { MuiList } from "../components/MuiList";
-import { CompanyList } from "../data/CompanyList";
+import { CompanyList } from "../data/CompanyList.js";
 import PdfView from "../components/PdfView";
 import { useState } from "react";
 
