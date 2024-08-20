@@ -1,4 +1,4 @@
-export const CompanyList = [
+ const CompanyList = [
   {
     id: 1,
     name: "Motilal Oswal Financial Services Limited",
@@ -28,3 +28,5 @@ export const CompanyList = [
     name: "Motilal Oswal House Finance Limited",
   },
 ];
+
+export default CompanyList
