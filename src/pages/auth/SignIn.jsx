@@ -12,6 +12,8 @@ import "./auth.css";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -27,7 +29,6 @@ export default function SignIn() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const navigate = useNavigate();
 
   return (
     // <AuthWrapper>
@@ -157,22 +158,23 @@ export default function SignIn() {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={6}></Grid>
-
-                  <Grid item xs={6} alignItems="flex-end">
-                    {/* <Link href="#" className="custom-link" onClick={()=>navigate("/forgot-password")}>
-                      <Typography variant="caption">
-                        Forgot password?
-                      </Typography>
-                    </Link> */}
+                  <Grid
+                    item
+                    xs={6}
+                    alignItems="flex-end"
+                    onClick={() => navigate("/forgot-password")}
+                  >
                     <Link
-                      component="button" // Use component="button" to make the Link behave like a button
+                      component="button"
                       className="custom-link"
-                      onClick={() => navigate("/forgot-password")}
-                      underline="none" // Optional: Remove underline if you don't want it
-                      sx={{ cursor: "pointer" }} // Ensure pointer cursor
+                      // onClick={() => alert("asfdasd")}
+                      underline="none"
+                      sx={{ cursor: "pointer" }}
                     >
-                      <Typography variant="caption">
+                      <Typography
+                        variant="caption"
+                        // onClick={() => navigate("/forgot-password")}
+                      >
                         Forgot password?
                       </Typography>
                     </Link>
