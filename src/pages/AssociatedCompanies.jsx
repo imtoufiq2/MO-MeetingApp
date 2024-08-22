@@ -2,33 +2,30 @@ import { Box } from "@mui/material";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import BusinessIcon from "@mui/icons-material/Business";
 import { MuiList } from "../components/MuiList";
-// import { CompanyList } from "../data/CompanyList.js";
+import { useEffect, useState } from "react";
 import CompanyList from "../data/companyList";
-import PdfView from "../components/PdfView";
-import { useState } from "react";
 
 const AssociatedCompanies = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (value) => {
-    setSearchQuery(value.trim().toLowerCase());
-  };
-  console.log("asdfasdfasd", searchQuery);
-  // Filter CompanyList based on searchQuery
+  // // Filter CompanyList based on searchQuery
   const filteredList = searchQuery
     ? CompanyList.filter((company) =>
         company.name.toLowerCase().includes(searchQuery)
       )
     : CompanyList;
+
+  useEffect(() => {
+    throw new Error("This is a simulated error in the FallbackComponent");
+  }, []);
   return (
-    <>
+    <Box>
       <ResponsiveAppBar
         icon={BusinessIcon}
         title="Associated Companies"
-        handleSearch={handleSearch}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
       />
+
       <Box
         className="poppins"
         sx={{
@@ -37,15 +34,20 @@ const AssociatedCompanies = () => {
           maxWidth: "592px",
           margin: "auto",
           marginTop: {
-            xs: "24px",
-            lg: "32px",
+            // xs: "24px",
+            lg: "24px",
           },
         }}
       >
-        <MuiList listToShow={filteredList} nextRoute="department" />
+        <MuiList
+          listToShow={filteredList}
+          nextRoute="department"
+          setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
+        />
       </Box>
-      <PdfView />
-    </>
+      {/* <PdfView /> */}
+    </Box>
   );
 };
 

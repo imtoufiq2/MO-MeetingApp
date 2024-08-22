@@ -1,6 +1,6 @@
-import { Typography, Container } from "@mui/material";
-
-const EmptyState = () => {
+import { Container, Typography } from "@mui/material";
+import offlineImage from "../assets/img/offline_image.svg";
+const SomethingWentWrong = () => {
   return (
     <Container
       sx={{
@@ -30,7 +30,7 @@ const EmptyState = () => {
           letterSpacing: "-0.3px",
         }}
       >
-        No results found
+        You’re offline
       </Typography>
       <Typography
         variant="body1"
@@ -42,10 +42,12 @@ const EmptyState = () => {
           letterSpacing: "-0.2px",
         }}
       >
-        Sorry, but your search returned no results
+        It seems you are not connected to the internet. Please check your
+        connection and try again.{" "}
       </Typography>
+      <img src={offlineImage} alt="Offline" />
     </Container>
   );
 };
 
-export default EmptyState;
+export default SomethingWentWrong;

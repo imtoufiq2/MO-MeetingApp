@@ -34,12 +34,17 @@ const Department = () => {
           maxWidth: "592px",
           margin: "auto",
           marginTop: {
-            xs: "24px",
-            lg: "32px",
+            // xs: "24px",
+            lg: "24px",
           },
         }}
       >
-        <MuiList listToShow={filteredList} nextRoute="meetings" />
+        <MuiList
+          listToShow={filteredList}
+          nextRoute="meetings"
+          setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
+        />
       </Box>
     </>
   );

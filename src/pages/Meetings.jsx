@@ -39,12 +39,17 @@ const Meetings = () => {
           maxWidth: "592px",
           margin: "auto",
           marginTop: {
-            xs: "24px",
-            lg: "32px",
+            // xs: "24px",
+            lg: "24px",
           },
         }}
       >
-        <MuiListMeeting listToShow={filteredList} />
+        <MuiListMeeting
+          listToShow={filteredList}
+          nextRoute="department"
+          setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
+        />
       </Box>
     </>
   );

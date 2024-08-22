@@ -55,7 +55,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function SearchAppBar({
   icon: Icon,
   title,
-  handleSearch,
+
   searchQuery,
   setSearchQuery,
 }) {
@@ -125,31 +125,24 @@ export default function SearchAppBar({
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
+                paddingRight: location?.pathname !== "/" ? "38px" : "0px",
               }}
             >
               <Icon sx={{ fontSize: 40 }} />
-
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ display: { xs: "none", sm: "block" } }}
-              >
+              <Typography variant="h6" noWrap component="div">
                 {title}
               </Typography>
             </Stack>
           </Stack>
-          {/* <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          </Search> */}
-          <Search>
+
+          <Search
+            sx={{
+              display: {
+                xs: "none", // Hidden on extra-small screens
+                lg: "block", // Visible on large screens
+              },
+            }}
+          >
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -157,7 +150,7 @@ export default function SearchAppBar({
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
               value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
 
             {searchQuery?.length > 0 && (

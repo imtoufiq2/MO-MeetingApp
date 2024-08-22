@@ -7,10 +7,6 @@ import { useState } from "react";
 const Reports = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = (value) => {
-    setSearchQuery(value.trim().toLowerCase());
-  };
-
   // Filter reportsList based on searchQuery
   const filteredList = searchQuery
     ? reportsList.filter((report) =>
@@ -22,7 +18,6 @@ const Reports = () => {
       <ResponsiveAppBar
         icon={DescriptionIcon}
         title="Reports"
-        handleSearch={handleSearch}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
       />
@@ -35,12 +30,18 @@ const Reports = () => {
           maxWidth: "592px",
           margin: "auto",
           marginTop: {
-            xs: "24px",
-            lg: "32px",
+            // xs: "24px",
+            lg: "24px",
           },
         }}
       >
-        <MuiList listToShow={filteredList} showIcon />
+        <MuiList
+          listToShow={filteredList}
+          showIcon
+          nextRoute="Reports"
+          setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
+        />
       </Box>
     </>
   );

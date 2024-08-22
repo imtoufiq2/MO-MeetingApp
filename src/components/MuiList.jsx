@@ -11,46 +11,66 @@ import {
 import DescriptionIcon from "@mui/icons-material/Description";
 import { useLocation, useNavigate } from "react-router-dom";
 import EmptyState from "./EmptyState";
+import SearchBar from "./SearchBar";
 
-export const MuiList = ({ listToShow, showIcon, nextRoute = "" }) => {
+export const MuiList = ({
+  showIcon,
+  nextRoute = "",
+  setSearchQuery,
+  searchQuery,
+  listToShow,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query.toLowerCase());
+  };
 
   return (
     <Box
       sx={{
         padding: {
+          // xs: "20px",
+          // lg: "0px",
           xs: "20px",
           lg: "0px",
         },
+        paddingTop: {
+          xs: "12px",
+        },
       }}
     >
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={handleSearchChange}
+      />
       <List
         sx={{
           gap: {
-            xs: "4px", // Small screens
-            md: "8px", // Medium screens and up
+            xs: "4px",
+            md: "8px",
           },
           display: "flex",
-          flexDirection: "column", // Ensure items stack vertically
+          flexDirection: "column",
         }}
       >
-        {listToShow?.length === 0 ? (
+        {listToShow.length === 0 ? (
           <EmptyState />
         ) : (
-          listToShow?.map((cur) => (
+          listToShow.map((cur) => (
             <ListItem
+              key={cur.id}
+              disablePadding
               onClick={() => {
-                if (cur.id && !location?.pathname?.includes("reports")) {
+                if (cur.id && !location.pathname.includes("reports")) {
                   navigate(`/${nextRoute}/${cur.id}`);
                 }
               }}
-              key={cur.id}
-              disablePadding
               sx={{
                 borderRadius: "8px",
-                overflow: "hidden", // Ensure rounded corners work properly
-                bgcolor: "background.paper", // Optional: Add background color to visualize the border radius
+                overflow: "hidden",
+                bgcolor: "background.paper",
                 margin: "4px 0",
                 boxShadow: 1,
               }}
@@ -86,12 +106,14 @@ export const MuiList = ({ listToShow, showIcon, nextRoute = "" }) => {
 };
 
 MuiList.propTypes = {
+  showIcon: PropTypes.bool,
+  nextRoute: PropTypes.string.isRequired,
+  setSearchQuery: PropTypes.func.isRequired,
+  searchQuery: PropTypes.string.isRequired,
   listToShow: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
     })
   ),
-  showIcon: PropTypes.bool,
-  nextRoute: PropTypes.string.isRequired,
 };
