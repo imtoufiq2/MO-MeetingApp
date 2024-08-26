@@ -4,24 +4,27 @@ import Groups2Icon from "@mui/icons-material/Groups2";
 import { MuiListMeeting } from "../components/MuiListMeeting";
 import { MeetingLists } from "../data/MeetingList";
 import { useState } from "react";
+import useScrollToTop from "../hooks/useScrollToTop";
 const Meetings = () => {
+  useScrollToTop();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (value) => {
     setSearchQuery(value.trim().toLowerCase());
   };
 
-  // Filter MeetingLists based on searchQuery
   const filteredList = searchQuery
     ? MeetingLists.filter(
         (meeting) =>
           meeting.startTime.toLowerCase().includes(searchQuery) ||
           meeting.endTime.toLowerCase().includes(searchQuery) ||
-          meeting.date.toLowerCase().includes(searchQuery) ||
-          meeting.count.toString().includes(searchQuery) ||
+          meeting.month.toLowerCase().includes(searchQuery) ||
+          meeting.day.toString().includes(searchQuery) ||
+          meeting.year.toString().includes(searchQuery) ||
           meeting.address.toLowerCase().includes(searchQuery)
       )
     : MeetingLists;
+
   return (
     <>
       <ResponsiveAppBar

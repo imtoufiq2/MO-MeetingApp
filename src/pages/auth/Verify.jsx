@@ -158,11 +158,22 @@ export default function VerifyMobile() {
                           spacing={2}
                           direction="row"
                           justifyContent="space-between"
+                          sx={{
+                            maxWidth: {
+                              xs: "300px", // For small screens
+                              lg: "100%", // For large screens and above, no maxWidth
+                            },
+                            margin: {
+                              xs: "auto", // Center horizontally on small screens
+                              lg: "none", // No margin auto on large screens
+                            },
+                          }}
                         >
                           {otp.map((digit, index) => (
                             <Grid item key={index}>
-                              <TextField
-                                id={`otp-input-${index}`}
+                              <input
+                                key={index}
+                                type="number"
                                 value={digit}
                                 inputMode="numeric"
                                 maxLength={1}
@@ -177,22 +188,7 @@ export default function VerifyMobile() {
                                 ref={(reference) =>
                                   (otpBoxReference.current[index] = reference)
                                 }
-                                variant="outlined"
-                                sx={{
-                                  maxWidth: "60px",
-                                  "& .MuiOutlinedInput-root": {
-                                    "& fieldset": {
-                                      borderColor: "gray",
-                                    },
-                                    "&:hover fieldset": {
-                                      borderColor: "orange",
-                                    },
-                                  },
-                                }}
-                                inputProps={{
-                                  maxLength: 1,
-                                  style: { textAlign: "center" },
-                                }}
+                                className="no-spinner otp-input"
                               />
                             </Grid>
                           ))}

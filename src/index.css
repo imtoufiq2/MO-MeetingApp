@@ -678,3 +678,41 @@ input:-webkit-autofill:active {
     background-color: #f9f9f9;
   }
 }
+
+
+
+.no-spinner {
+  -moz-appearance: textfield;
+}
+
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.otp-input {
+  height: 2.875rem;
+  width: 100%;
+  max-width: 58px;
+  border-radius: 0.375rem;
+  border-width: 2px;
+  /* border-color: gray; */
+  border: 2px solid rgb(182, 177, 177);
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: -0.3px;
+  background-color: white;
+  color: black;
+
+}
+
+.otp-input:focus {
+border: 2px solid orange;
+  outline: orange;
+}
+.otp-input:filled {
+  border: 2px solid orange; /* Border color when filled */
+}

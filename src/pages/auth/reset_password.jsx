@@ -1,33 +1,41 @@
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
-// import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { FormControl, Stack } from "@mui/material";
+import { Field, Form, Formik, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { BootstrapInput } from "../../utils/Input/textfield";
 import "./auth.css";
-import { useNavigate } from "react-router-dom";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const handleSubmit = async (values, { resetForm }) => {
+    // Handle form submission
+    console.log(values);
+    // Navigate after successful form submission
+    navigate("/verify-otp");
+    resetForm();
   };
 
+  // Form validation schema for phone number
+  const validationSchema = Yup.object({
+    phoneNumber: Yup.number()
+      .typeError("Invalid phone number")
+      .integer("Phone number must be an integer")
+      .min(1000000000, "Phone number must be exactly 10 digits")
+      .max(9999999999, "Phone number must be exactly 10 digits")
+      .required("Phone number is required"),
+  });
+
   return (
-    // <AuthWrapper>
     <Box
       className="poppins"
       sx={{
         minHeight: "100vh",
-        // paddingBlock: "20px",
         overflow: "hidden",
       }}
     >
@@ -42,11 +50,9 @@ export default function ResetPassword() {
       >
         <Grid container spacing={3}>
           <Grid item xs={12} textAlign="center">
-            {/* <Logo /> */}
             <img
               src="https://imgs.search.brave.com/-NLPufxpYH-GyQyrpsElVt4626cidyyBEX9hvyVjpA0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dmFsdWVyZXNlYXJj/aG9ubGluZS5jb20v/Y29udGVudC1hc3Nl/dHMvaW1hZ2VzL2Z1/bmQtbmV3cy1tb3Rp/bGFsLW9zd2FsX193/MTIwX19oNjhfXy5q/cGc"
               alt="logo"
-              className=""
               style={{ borderRadius: "10px" }}
             />
           </Grid>
@@ -60,130 +66,169 @@ export default function ResetPassword() {
                   alignItems: "center",
                 }}
               >
-                {/* <Avatar sx={{ m: 1, bgcolor: "green" }}>
-                  <LockOutlinedIcon />
-                </Avatar> */}
                 <Stack alignItems="center">
                   <Typography
                     variant="h5"
                     sx={{ color: "primary.main", fontWeight: 500 }}
                   >
-                    {/* MO Meeting App */}
                     Reset Password
                   </Typography>
                 </Stack>
-                <Grid
-                  container
-                  spacing={2}
-                  component="form"
-                  direction="column"
+                <Formik
+                  initialValues={{ phoneNumber: "" }}
+                  validationSchema={validationSchema}
                   onSubmit={handleSubmit}
-                  noValidate
-                  // sx={{ mt: 1, width: { md: "30%", xs: "100%" } }}
-                  sx={{
-                    mt: 1,
-                    width: {
-                      xs: "100%", // 100% width for extra-small screens
-                      sm: "450px", // 30% width for medium screens and larger
-                    },
-                  }}
                 >
-                  <Grid item xs={12}>
-                    <FormControl
-                      id="_form_control"
-                      variant="standard"
-                      fullWidth
-                      sx={{
-                        gap: { xs: "20px", md: "28px" },
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="h3"
-                          component="h3"
-                          className="label d-flex items-center"
-                        >
-                          Mobile
-                          <sup className="asc">*</sup>
-                        </Typography>
-                        <BootstrapInput
-                          fullWidth
-                          id="email"
-                          size="small"
-                          label="Email Address"
-                          name="email"
-                          placeholder="Enter Registered Mobile Number"
-                          // InputLabelProps={{
-                          //   shrink: true,
-                          // }}
-                        />
-                      </Box>
-
-                      <Box
+                  {({ errors, touched, setFieldValue }) => (
+                    <Form style={{ width: "100%" }} noValidate>
+                      <Grid
+                        container
+                        spacing={2}
+                        direction="column"
                         sx={{
-                          display: "flex",
-                          gap: 1,
                           mt: 1,
-                          flexDirection: { xs: "column-reverse", md: "row" },
+                          width: {
+                            xs: "100%", // 100% width for extra-small screens
+                            sm: "450px", // 30% width for medium screens and larger
+                          },
+                          margin: {
+                            // xs: "100%",
+                            sm: "auto",
+                          },
                         }}
                       >
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          sx={{
-                            borderColor: "primary.main",
-                            color: "primary.main",
-                            backgroundColor: "secondary.main",
-                            "&:hover": {
-                              borderColor: "#f57c00",
-                              backgroundColor: "secondary.main",
-                            },
-                            "&:active": {
-                              border: "none",
-                              backgroundColor: "secondary.light",
-                            },
-                            "&:focus": {
-                              border: "none",
-                              outline: "none",
-                            },
-                          }}
-                          onClick={() => navigate("/sign-in")}
-                        >
-                          Cancel
-                        </Button>
+                        <Grid item xs={12}>
+                          <FormControl
+                            variant="standard"
+                            fullWidth
+                            sx={{
+                              gap: { xs: "20px", md: "28px" },
+                            }}
+                          >
+                            <Box>
+                              <Typography
+                                variant="h3"
+                                component="h3"
+                                className="label d-flex items-center"
+                              >
+                                Mobile
+                                <sup className="asc">*</sup>
+                              </Typography>
+                              <Field
+                                name="phoneNumber"
+                                as={BootstrapInput}
+                                fullWidth
+                                id="phoneNumber"
+                                size="small"
+                                placeholder="Enter Registered Mobile Number"
+                                inputProps={{
+                                  maxLength: 10, // Restrict to 10 digits
+                                  onInput: (e) => {
+                                    const value = e.target.value.replace(
+                                      /\D/g,
+                                      ""
+                                    ); // Remove non-digit characters
+                                    if (value.length > 10) {
+                                      e.target.value = value.slice(0, 10); // Limit to 10 digits
+                                    } else {
+                                      e.target.value = value;
+                                    }
+                                    setFieldValue(
+                                      "phoneNumber",
+                                      e.target.value
+                                    );
+                                  },
+                                }}
+                                sx={{
+                                  borderColor:
+                                    errors.phoneNumber && touched.phoneNumber
+                                      ? "red"
+                                      : "inherit",
+                                  borderWidth:
+                                    errors.phoneNumber && touched.phoneNumber
+                                      ? "2px"
+                                      : "1px",
+                                }}
+                              />
+                              <Typography
+                                color="error"
+                                variant="caption"
+                                component="div"
+                              >
+                                <ErrorMessage name="phoneNumber" />
+                              </Typography>
+                            </Box>
 
-                        <Button
-                          onClick={() => navigate("/verify-otp")}
-                          fullWidth
-                          variant="contained"
-                          sx={{
-                            backgroundColor: "primary.main",
-                            borderColor: "primary.main",
-                            "&:hover": {
-                              borderColor: "primary.main",
-                            },
-                            "&:active": {
-                              border: "none",
-                              outline: "none",
-                            },
-                            "&:focus": {
-                              border: "none",
-                              outline: "none",
-                            },
-                          }}
-                        >
-                          Submit
-                        </Button>
-                      </Box>
-                    </FormControl>
-                  </Grid>
-                </Grid>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                gap: 1,
+                                mt: 1,
+                                flexDirection: {
+                                  xs: "column-reverse",
+                                  md: "row",
+                                },
+                              }}
+                            >
+                              <Button
+                                fullWidth
+                                variant="contained"
+                                sx={{
+                                  borderColor: "primary.main",
+                                  color: "primary.main",
+                                  backgroundColor: "secondary.main",
+                                  "&:hover": {
+                                    borderColor: "#f57c00",
+                                    backgroundColor: "secondary.main",
+                                  },
+                                  "&:active": {
+                                    border: "none",
+                                    backgroundColor: "secondary.light",
+                                  },
+                                  "&:focus": {
+                                    border: "none",
+                                    outline: "none",
+                                  },
+                                }}
+                                onClick={() => navigate("/sign-in")}
+                              >
+                                Cancel
+                              </Button>
+
+                              <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{
+                                  backgroundColor: "primary.main",
+                                  borderColor: "primary.main",
+                                  "&:hover": {
+                                    borderColor: "primary.main",
+                                  },
+                                  "&:active": {
+                                    border: "none",
+                                    outline: "none",
+                                  },
+                                  "&:focus": {
+                                    border: "none",
+                                    outline: "none",
+                                  },
+                                }}
+                              >
+                                Submit
+                              </Button>
+                            </Box>
+                          </FormControl>
+                        </Grid>
+                      </Grid>
+                    </Form>
+                  )}
+                </Formik>
               </Box>
             </Container>
           </Grid>
         </Grid>
       </Grid>
     </Box>
-    // </AuthWrapper>
   );
 }

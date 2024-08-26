@@ -180,6 +180,6 @@ SearchAppBar.propTypes = {
   icon: PropTypes.elementType.isRequired,
   title: PropTypes.string.isRequired,
   searchQuery: PropTypes.string.isRequired,
-  handleSearch: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func,
   setSearchQuery: PropTypes.func.isRequired,
 };

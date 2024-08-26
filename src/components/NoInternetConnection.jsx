@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from "@mui/material";
 import offlineImage from "../assets/img/offline_image.svg";
-const SomethingWentWrong = () => {
+const NoInternetConnection = () => {
   return (
     <Container
       sx={{
@@ -57,4 +57,4 @@ const SomethingWentWrong = () => {
   );
 };
 
-export default SomethingWentWrong;
+export default NoInternetConnection;

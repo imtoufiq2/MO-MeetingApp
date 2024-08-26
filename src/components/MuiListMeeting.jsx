@@ -3,6 +3,7 @@ import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import EmptyState from "./EmptyState";
+import DateDisplay from "./dateDisplay/DateDisplay";
 
 export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
               }}
               disablePadding
             >
-              <div
+              <Box
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -70,23 +71,13 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                   width: "100px",
                   padding: "8px",
                   textAlign: "center",
+                  gap: "8px",
                 }}
               >
-                <div
-                  id="_logo"
-                  style={{
-                    width: "60px",
-                    height: "35px",
-                    backgroundColor: "#fb8c00",
-                    borderRadius: "40% 40% 0 0",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    fontSize: "14px",
-                  }}
-                >
-                  {item.count} {/* Display dynamic count */}
-                </div>
+                <DateDisplay
+                  dateTorender={item.day}
+                  monthTorender={item.month}
+                />
                 <Typography
                   variant="body2"
                   sx={{
@@ -94,12 +85,12 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                     fontSize: "12px",
                     color: "gray",
                     marginTop: "8px",
+                    margin: "auto",
                   }}
                 >
-                  {item.date}
+                  2023
                 </Typography>
-              </div>
-
+              </Box>
               <ListItemText
                 primary={
                   <Typography
@@ -152,8 +143,9 @@ MuiListMeeting.propTypes = {
       id: PropTypes.number.isRequired,
       startTime: PropTypes.string.isRequired,
       endTime: PropTypes.string.isRequired,
-      date: PropTypes.string.isRequired,
-      count: PropTypes.number.isRequired,
+      day: PropTypes.number.isRequired,
+      month: PropTypes.string.isRequired,
+      year: PropTypes.number.isRequired,
       address: PropTypes.string.isRequired,
     })
   ).isRequired,

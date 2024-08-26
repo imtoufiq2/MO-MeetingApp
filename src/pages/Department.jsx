@@ -4,14 +4,16 @@ import BusinessIcon from "@mui/icons-material/Business";
 import { MuiList } from "../components/MuiList";
 import { departmentList } from "../data/departmentList";
 import { useState } from "react";
+import useScrollToTop from "../hooks/useScrollToTop";
 const Department = () => {
+  useScrollToTop();
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (value) => {
     setSearchQuery(value.trim().toLowerCase());
   };
 
-  // Filter departmentList based on searchQuery
   const filteredList = searchQuery
     ? departmentList.filter((department) =>
         department.name.toLowerCase().includes(searchQuery)

@@ -31,8 +31,6 @@ export const MuiList = ({
     <Box
       sx={{
         padding: {
-          // xs: "20px",
-          // lg: "0px",
           xs: "20px",
           lg: "0px",
         },

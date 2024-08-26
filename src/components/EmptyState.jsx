@@ -14,7 +14,10 @@ const EmptyState = () => {
         border: "1px solid",
         borderColor: "#D7DFE9",
         borderRadius: 2,
-        marginTop: "50%",
+        marginTop: {
+          xs: "50%",
+          md: "30%",
+        },
         transform: "translateY(-50%)",
         p: 3, // Adding padding for better spacing
       }}

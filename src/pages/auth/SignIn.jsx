@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
-// import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -10,33 +9,82 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { BootstrapInput } from "../../utils/Input/textfield";
 import "./auth.css";
 import { Link, useNavigate } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+// import encryptData from "../../helpers/encryption";
 
 export default function SignIn() {
   const navigate = useNavigate();
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
   const [showPassword, setShowPassword] = useState(false);
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  const handleSubmit = async (values, { resetForm }) => {
+    console.log("vlaues is", values);
+    navigate("/");
+    resetForm();
+    // Prepare the data to be encrypted
+    // const bodyData = {
+    //   iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
+    //   authType: "client_credentials",
+    //   clientToken: "",
+    //   password: values.password, // Use Formik value for password
+    //   clientCode: values.email, // Use Formik value for email
+    // };
+
+    // try {
+    //   const encryptedData = encryptData(bodyData);
+
+    //   const response = await fetch(
+    //     "https://prd.motilaloswal.com/BoardMeetingApi/api/Login/authorize",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
+    //         Referer: "http://localhost:5173/",
+    //         "Sec-CH-UA":
+    //           '"Not)A;Brand";v="99", "Google Chrome";v="127", "Chromium";v="127"',
+    //         "Sec-CH-UA-Mobile": "?0",
+    //         "Sec-CH-UA-Platform": '"Windows"',
+    //         "User-Agent":
+    //           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    //         "Accept-Encoding": "br",
+    //       },
+    //       body: encryptedData,
+    //     }
+    //   );
+
+    //   if (!response.ok) {
+    //     throw new Error(`HTTP error! Status: ${response.status}`);
+    //   }
+
+    //   const result = await response.json();
+    //   console.log(result);
+    // } catch (error) {
+    //   console.error("Error making POST request:", error);
+    // }
+  };
+
+  // Form validation schema
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
   return (
-    // <AuthWrapper>
     <Box
       className="poppins"
       sx={{
         minHeight: "100vh",
-        // paddingBlock: "20px",
         overflow: "hidden",
       }}
     >
@@ -51,7 +99,6 @@ export default function SignIn() {
       >
         <Grid container spacing={3}>
           <Grid item xs={12} textAlign="center">
-            {/* <Logo /> */}
             <img
               src="https://imgs.search.brave.com/-NLPufxpYH-GyQyrpsElVt4626cidyyBEX9hvyVjpA0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dmFsdWVyZXNlYXJj/aG9ubGluZS5jb20v/Y29udGVudC1hc3Nl/dHMvaW1hZ2VzL2Z1/bmQtbmV3cy1tb3Rp/bGFsLW9zd2FsX193/MTIwX19oNjhfXy5q/cGc"
               alt="logo"
@@ -69,156 +116,157 @@ export default function SignIn() {
                   alignItems: "center",
                 }}
               >
-                {/* <Avatar sx={{ m: 1, bgcolor: "green" }}>
-                  <LockOutlinedIcon />
-                </Avatar> */}
                 <Stack alignItems="center">
                   <Typography
                     variant="h5"
                     sx={{ color: "primary.main", fontWeight: 500 }}
                   >
-                    {/* MO Meeting App */}
                     Login
                   </Typography>
                 </Stack>
-                <Grid
-                  container
-                  spacing={2}
-                  component="form"
-                  direction="column"
+                <Formik
+                  initialValues={{ email: "", password: "" }}
+                  validationSchema={validationSchema}
                   onSubmit={handleSubmit}
-                  noValidate
-                  // sx={{ mt: 1, width: { md: "30%", xs: "100%" } }}
-                  sx={{
-                    mt: 1,
-                    width: {
-                      xs: "100%", // 100% width for extra-small screens
-                      sm: "450px", // 30% width for medium screens and larger
-                    },
-                  }}
+                  validateOnBlur={false}
+                  // validateOnChange={false}
                 >
-                  <Grid item xs={12}>
-                    <FormControl variant="standard" fullWidth>
-                      <Typography className="label d-flex items-center">
-                        Email
-                        <sup className="asc">*</sup>
-                      </Typography>
-                      <BootstrapInput
-                        fullWidth
-                        id="email"
-                        size="small"
-                        label="Email Address"
-                        name="email"
-                        placeholder="Email"
-                        // InputLabelProps={{
-                        //   shrink: true,
-                        // }}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl variant="standard" fullWidth>
-                      <Typography className="label d-flex items-center">
-                        Password
-                        <sup className="asc">*</sup>
-                      </Typography>
-                      <BootstrapInput
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        fullWidth
-                        size="small"
-                        label="Password"
-                        name="password"
-                        placeholder="Password"
-                        // InputLabelProps={{
-                        //   shrink: true,
-                        // }}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              onMouseDown={handleMouseDownPassword}
-                              onMouseUp={handleMouseDownPassword}
-                              edge="end"
-                              color="text.greyLight"
-                            >
-                              {showPassword ? (
-                                <Visibility
-                                  fontSize="small"
-                                  color="text.greyLight"
-                                />
-                              ) : (
-                                <VisibilityOff fontSize="small" />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-
-                  <Grid
-                    item
-                    xs={6}
-                    alignItems="flex-end"
-                    onClick={() => navigate("/forgot-password")}
-                  >
-                    <Link
-                      component="button"
-                      className="custom-link"
-                      // onClick={() => alert("asfdasd")}
-                      underline="none"
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <Typography
-                        variant="caption"
-                        // onClick={() => navigate("/forgot-password")}
+                  {({ values, handleChange, errors }) => (
+                    <Form style={{ width: "100%" }}>
+                      <Grid
+                        container
+                        spacing={2}
+                        direction="column"
+                        sx={{
+                          mt: 1,
+                          width: {
+                            xs: "100%",
+                            sm: "450px",
+                          },
+                          margin: {
+                            // xs: "100%",
+                            sm: "auto",
+                          },
+                        }}
                       >
-                        Forgot password?
-                      </Typography>
-                    </Link>
-                  </Grid>
+                        <Grid item xs={12}>
+                          <FormControl variant="standard" fullWidth>
+                            <Typography className="label d-flex items-center">
+                              Email
+                              <sup className="asc">*</sup>
+                            </Typography>
+                            <Field
+                              name="email"
+                              as={BootstrapInput}
+                              fullWidth
+                              id="email"
+                              size="small"
+                              placeholder="Email"
+                            />
+                            <Typography
+                              color="error"
+                              variant="caption"
+                              component="div"
+                            >
+                              <ErrorMessage name="email" />
+                            </Typography>
+                          </FormControl>
+                        </Grid>
 
-                  <Grid item xs={12}>
-                    <Button
-                      // type="submit"
-                      fullWidth
-                      aria-label="login button"
-                      variant="contained"
-                      // sx={{ mt: 1, mb: 1, backgroundColor: "primary.main" }}
-                      sx={{
-                        // mt: 1,
-                        // mb: 1,
-                        backgroundColor: "primary.main",
-                        borderColor: "primary.main",
-                        // color: "primary.main", // Optional: changes the text color to red as well
-                        "&:hover": {
-                          borderColor: "primary.main", // Optional: changes the border color on hover
-                        },
-                        "&:active": {
-                          border: "none", // Removes the border
-                          outline: "none", // Removes the outline
-                        },
-                        "&:focus": {
-                          border: "none", // Removes the border
-                          outline: "none", // Removes the outline
-                        },
-                      }}
-                      onClick={() => {
-                        navigate("/");
-                      }}
-                    >
-                      Sign In
-                    </Button>
-                  </Grid>
-                </Grid>
+                        <Grid item xs={12}>
+                          <FormControl variant="standard" fullWidth>
+                            <Typography className="label d-flex items-center">
+                              Password
+                              <sup className="asc">*</sup>
+                            </Typography>
+                            <Field
+                              name="password"
+                              as={BootstrapInput}
+                              id="password"
+                              type={showPassword ? "text" : "password"}
+                              fullWidth
+                              size="small"
+                              placeholder="Password"
+                              endAdornment={
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                  >
+                                    {showPassword ? (
+                                      <Visibility fontSize="small" />
+                                    ) : (
+                                      <VisibilityOff fontSize="small" />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              }
+                            />
+
+                            <Typography
+                              color="error"
+                              variant="caption"
+                              component="div"
+                            >
+                              <ErrorMessage name="password" />
+                            </Typography>
+                          </FormControl>
+                        </Grid>
+
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="flex-end"
+                          onClick={() => navigate("/forgot-password")}
+                        >
+                          <Link
+                            component="button"
+                            className="custom-link"
+                            underline="none"
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <Typography variant="caption">
+                              Forgot password?
+                            </Typography>
+                          </Link>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <Button
+                            type="submit"
+                            fullWidth
+                            aria-label="login button"
+                            variant="contained"
+                            sx={{
+                              backgroundColor: "primary.main",
+                              borderColor: "primary.main",
+                              "&:hover": {
+                                borderColor: "primary.main",
+                              },
+                              "&:active": {
+                                border: "none",
+                                outline: "none",
+                              },
+                              "&:focus": {
+                                border: "none",
+                                outline: "none",
+                              },
+                            }}
+                          >
+                            Sign In
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Form>
+                  )}
+                </Formik>
               </Box>
             </Container>
           </Grid>
         </Grid>
       </Grid>
     </Box>
-    // </AuthWrapper>
   );
 }

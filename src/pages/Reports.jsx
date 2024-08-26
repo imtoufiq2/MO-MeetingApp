@@ -4,7 +4,10 @@ import { MuiList } from "../components/MuiList";
 import { reportsList } from "../data/reports";
 import DescriptionIcon from "@mui/icons-material/Description";
 import { useState } from "react";
+import useScrollToTop from "../hooks/useScrollToTop";
 const Reports = () => {
+  useScrollToTop();
+
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter reportsList based on searchQuery

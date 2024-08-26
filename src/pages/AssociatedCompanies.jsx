@@ -4,10 +4,12 @@ import BusinessIcon from "@mui/icons-material/Business";
 import { MuiList } from "../components/MuiList";
 import { useEffect, useState } from "react";
 import CompanyList from "../data/companyList";
+import useScrollToTop from "../hooks/useScrollToTop";
 
 const AssociatedCompanies = () => {
+  useScrollToTop();
   const [searchQuery, setSearchQuery] = useState("");
-  // // Filter CompanyList based on searchQuery
+
   const filteredList = searchQuery
     ? CompanyList.filter((company) =>
         company.name.toLowerCase().includes(searchQuery)
@@ -15,7 +17,7 @@ const AssociatedCompanies = () => {
     : CompanyList;
 
   useEffect(() => {
-    throw new Error("This is a simulated error in the FallbackComponent");
+    // throw new Error("This is a simulated error in the FallbackComponent");
   }, []);
   return (
     <Box>
