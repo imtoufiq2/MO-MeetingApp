@@ -1,6 +1,10 @@
+import PropTypes from "prop-types";
 import { Typography, Container } from "@mui/material";
 
-const EmptyState = () => {
+const EmptyState = ({
+  title = "No results found",
+  subTitle = "Sorry, but your search returned no results",
+}) => {
   return (
     <Container
       sx={{
@@ -13,6 +17,7 @@ const EmptyState = () => {
         textAlign: "center",
         border: "1px solid",
         borderColor: "#D7DFE9",
+        maxWidth: "592px",
         borderRadius: 2,
         marginTop: {
           xs: "50%",
@@ -20,6 +25,10 @@ const EmptyState = () => {
         },
         transform: "translateY(-50%)",
         p: 3, // Adding padding for better spacing
+        width: {
+          xs: "95%",
+          // sm: "auto",
+        },
       }}
     >
       <Typography
@@ -33,7 +42,7 @@ const EmptyState = () => {
           letterSpacing: "-0.3px",
         }}
       >
-        No results found
+        {title}
       </Typography>
       <Typography
         variant="body1"
@@ -45,10 +54,14 @@ const EmptyState = () => {
           letterSpacing: "-0.2px",
         }}
       >
-        Sorry, but your search returned no results
+        {subTitle}
       </Typography>
     </Container>
   );
+};
+EmptyState.propTypes = {
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
 };
 
 export default EmptyState;

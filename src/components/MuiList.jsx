@@ -19,10 +19,11 @@ export const MuiList = ({
   setSearchQuery,
   searchQuery,
   listToShow,
+  loading,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  console.log("locaton data", location.pathname.includes("/reports"));
   const handleSearchChange = (query) => {
     setSearchQuery(query.toLowerCase());
   };
@@ -53,7 +54,7 @@ export const MuiList = ({
           flexDirection: "column",
         }}
       >
-        {listToShow.length === 0 ? (
+        {listToShow.length === 0 && !loading ? (
           <EmptyState />
         ) : (
           listToShow.map((cur) => (
@@ -61,8 +62,15 @@ export const MuiList = ({
               key={cur.id}
               disablePadding
               onClick={() => {
-                if (cur.id && !location.pathname.includes("reports")) {
-                  navigate(`/${nextRoute}/${cur.id}`);
+                if (cur.CompanyID) {
+                  navigate(`/${nextRoute}/${cur.CompanyID ?? 0}`);
+                } else if (cur.CommitteeID ?? 0) {
+                  navigate(`/${nextRoute}/${cur.CommitteeID ?? 0}`);
+                } else {
+                  navigate(`/${nextRoute}/${cur.MeetingDetailID ?? 0}`);
+                  if (location.pathname.includes("/reports")) {
+                    sessionStorage.setItem("url", cur?.ReportPath ?? "");
+                  }
                 }
               }}
               sx={{
@@ -73,6 +81,7 @@ export const MuiList = ({
                 boxShadow: 1,
               }}
             >
+              {console.log("asfdasdfasdfas", cur)}
               <ListItemButton>
                 {showIcon && (
                   <ListItemIcon>
@@ -90,7 +99,13 @@ export const MuiList = ({
                         fontWeight: "500",
                       }}
                     >
-                      {cur.name}
+                      {location?.pathname === "/"
+                        ? cur?.CompanyName
+                        : location.pathname.includes("/reports")
+                        ? cur?.ReportName
+                        : location.pathname.includes("/department")
+                        ? cur.CommitteeName
+                        : cur.name}
                     </Typography>
                   }
                 />
@@ -105,6 +120,7 @@ export const MuiList = ({
 
 MuiList.propTypes = {
   showIcon: PropTypes.bool,
+  loading: PropTypes.bool,
   nextRoute: PropTypes.string.isRequired,
   setSearchQuery: PropTypes.func.isRequired,
   searchQuery: PropTypes.string.isRequired,

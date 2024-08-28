@@ -1,34 +1,34 @@
 export const departmentList = [
     {
-      id: 1,
+      CommitteeID: 20,
       name: "Board Meeting",
     },
     {
-      id: 2,
+      CommitteeID: 20,
       name: "Audit Committee",
     },
     {
-      id: 3,
+      CommitteeID: 20,
       name: "Nomination and Remuneration Committee",
     },
     {
-      id: 4,
+      CommitteeID: 20,
       name: "Corporate Social Responsibility Committee",
     },
     {
-      id: 5,
+      CommitteeID: 20,
       name: "Separate Meeting of Independent Directors",
     },
     {
-      id: 6,
+      CommitteeID: 20,
       name: "Stakeholders Relationship Committee",
     },
     {
-      id: 7,
+      CommitteeID: 20,
       name: "Risk Management Committee",
     },
     {
-      id: 8,
+      CommitteeID: 20,
       name: "General Documents_MOFSL",
     },
   ];

@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
-import offlineImage from "../assets/img/offline_image.svg";
+import somethingWentWrong from "../assets/img/something_went_wrong.svg";
 const SomethingWentWrong = () => {
   return (
     <Container
@@ -23,7 +23,7 @@ const SomethingWentWrong = () => {
     >
       <Box
         component="img"
-        src={offlineImage}
+        src={somethingWentWrong}
         alt="Offline"
         sx={{ maxWidth: "140px", width: "100%", height: "auto" }}
       />{" "}
@@ -38,7 +38,7 @@ const SomethingWentWrong = () => {
           letterSpacing: "-0.3px",
         }}
       >
-        You’re offline
+        Something Went Wrong
       </Typography>
       <Typography
         variant="body1"
@@ -50,8 +50,8 @@ const SomethingWentWrong = () => {
           letterSpacing: "-0.2px",
         }}
       >
-        It seems you are not connected to the internet. Please check your
-        connection and try again.{" "}
+        We encountered an unexpected issue. Please try again later or contact
+        support if the problem persists.
       </Typography>
     </Container>
   );

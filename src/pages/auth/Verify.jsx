@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { FormControl, Stack, TextField } from "@mui/material";
+import { FormControl, Stack } from "@mui/material";
 import "./auth.css";
 import { useNavigate } from "react-router-dom";
 import ResponsiveImage from "../../components/Logo";

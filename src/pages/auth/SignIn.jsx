@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -11,7 +10,12 @@ import "./auth.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-// import encryptData from "../../helpers/encryption";
+import encryptData from "../../helpers/encryption";
+import decryptData from "../../helpers/decryption";
+import toast from "react-hot-toast";
+// import BaBranding_logo from "../assets/img/BaBranding_logo.png";
+import brandingLogo from "../../assets/img/BaBranding_logo.png";
+import { LoadingButton } from "@mui/lab";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -25,54 +29,49 @@ export default function SignIn() {
     event.preventDefault();
   };
 
-  const handleSubmit = async (values, { resetForm }) => {
-    console.log("vlaues is", values);
-    navigate("/");
-    resetForm();
-    // Prepare the data to be encrypted
-    // const bodyData = {
-    //   iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
-    //   authType: "client_credentials",
-    //   clientToken: "",
-    //   password: values.password, // Use Formik value for password
-    //   clientCode: values.email, // Use Formik value for email
-    // };
+  const handleSubmit = async (values, { resetForm, setSubmitting }) => {
+    console.log("values is", values);
 
-    // try {
-    //   const encryptedData = encryptData(bodyData);
+    const body = {
+      iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
+      authType: "client_credentials",
+      clientCode: "kailash.purohit@motilaloswal.com",
+      password: "bW9zbEAxMjM0",
+      clientToken: "",
+    };
 
-    //   const response = await fetch(
-    //     "https://prd.motilaloswal.com/BoardMeetingApi/api/Login/authorize",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
-    //         Referer: "http://localhost:5173/",
-    //         "Sec-CH-UA":
-    //           '"Not)A;Brand";v="99", "Google Chrome";v="127", "Chromium";v="127"',
-    //         "Sec-CH-UA-Mobile": "?0",
-    //         "Sec-CH-UA-Platform": '"Windows"',
-    //         "User-Agent":
-    //           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
-    //         "Accept-Encoding": "br",
-    //       },
-    //       body: encryptedData,
-    //     }
-    //   );
+    try {
+      const encryptedData = encryptData(body);
 
-    //   if (!response.ok) {
-    //     throw new Error(`HTTP error! Status: ${response.status}`);
-    //   }
+      const response = await fetch("/BoardMeetingApi/api/Login/authorize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
+        },
+        body: encryptedData,
+      });
 
-    //   const result = await response.json();
-    //   console.log(result);
-    // } catch (error) {
-    //   console.error("Error making POST request:", error);
-    // }
+      const result = await response.text();
+
+      const responseData = decryptData(result);
+
+      console.log("responseData", responseData);
+
+      if (responseData?.success) {
+        sessionStorage.setItem("loginData", JSON.stringify(responseData?.data));
+        navigate("/");
+        resetForm();
+      } else if (responseData?.message) {
+        toast.error(responseData?.message);
+      }
+    } catch (error) {
+      console.error("Error making POST request:", error);
+      toast.error("Something went wrong");
+    }
+    setSubmitting(false);
   };
 
-  // Form validation schema
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address")
@@ -99,11 +98,21 @@ export default function SignIn() {
       >
         <Grid container spacing={3}>
           <Grid item xs={12} textAlign="center">
-            <img
-              src="https://imgs.search.brave.com/-NLPufxpYH-GyQyrpsElVt4626cidyyBEX9hvyVjpA0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/dmFsdWVyZXNlYXJj/aG9ubGluZS5jb20v/Y29udGVudC1hc3Nl/dHMvaW1hZ2VzL2Z1/bmQtbmV3cy1tb3Rp/bGFsLW9zd2FsX193/MTIwX19oNjhfXy5q/cGc"
+            {/* <img
+              src={brandingLogo}
               alt="logo"
-              className=""
-              style={{ borderRadius: "10px" }}
+              style={{ borderRadius: "10px", width: "150px", height: "100px" }}
+            /> */}
+            <Box
+              component="img"
+              src={brandingLogo}
+              alt="logo"
+              sx={{
+                borderRadius: "10px",
+                width: { xs: "100px", sm: "150px" },
+                height: { xs: "auto", sm: "90px" },
+                objectFit: "inherit",
+              }}
             />
           </Grid>
 
@@ -129,9 +138,16 @@ export default function SignIn() {
                   validationSchema={validationSchema}
                   onSubmit={handleSubmit}
                   validateOnBlur={false}
-                  // validateOnChange={false}
+                  validateOnChange={true}
                 >
-                  {({ values, handleChange, errors }) => (
+                  {({
+                    values,
+                    handleChange,
+                    errors,
+                    touched,
+                    submitCount,
+                    isSubmitting,
+                  }) => (
                     <Form style={{ width: "100%" }}>
                       <Grid
                         container
@@ -144,7 +160,6 @@ export default function SignIn() {
                             sm: "450px",
                           },
                           margin: {
-                            // xs: "100%",
                             sm: "auto",
                           },
                         }}
@@ -162,14 +177,23 @@ export default function SignIn() {
                               id="email"
                               size="small"
                               placeholder="Email"
+                              value={values.email}
+                              onChange={handleChange}
+                              error={
+                                submitCount > 0 &&
+                                (touched.email || !!errors.email)
+                              }
                             />
-                            <Typography
-                              color="error"
-                              variant="caption"
-                              component="div"
-                            >
-                              <ErrorMessage name="email" />
-                            </Typography>
+                            {submitCount > 0 &&
+                              (touched.email || !!errors.email) && (
+                                <Typography
+                                  color="error"
+                                  variant="caption"
+                                  component="div"
+                                >
+                                  <ErrorMessage name="email" />
+                                </Typography>
+                              )}
                           </FormControl>
                         </Grid>
 
@@ -183,6 +207,12 @@ export default function SignIn() {
                               name="password"
                               as={BootstrapInput}
                               id="password"
+                              value={values.password}
+                              onChange={handleChange}
+                              error={
+                                submitCount > 0 &&
+                                (touched.password || !!errors.password)
+                              }
                               type={showPassword ? "text" : "password"}
                               fullWidth
                               size="small"
@@ -204,14 +234,16 @@ export default function SignIn() {
                                 </InputAdornment>
                               }
                             />
-
-                            <Typography
-                              color="error"
-                              variant="caption"
-                              component="div"
-                            >
-                              <ErrorMessage name="password" />
-                            </Typography>
+                            {submitCount > 0 &&
+                              (touched.password || !!errors.password) && (
+                                <Typography
+                                  color="error"
+                                  variant="caption"
+                                  component="div"
+                                >
+                                  <ErrorMessage name="password" />
+                                </Typography>
+                              )}
                           </FormControl>
                         </Grid>
 
@@ -232,13 +264,48 @@ export default function SignIn() {
                             </Typography>
                           </Link>
                         </Grid>
-
                         <Grid item xs={12}>
-                          <Button
+                          <LoadingButton
+                            loading={isSubmitting}
+                            loadingPosition="center"
                             type="submit"
                             fullWidth
                             aria-label="login button"
                             variant="contained"
+                            disabled={isSubmitting}
+                            sx={{
+                              backgroundColor: isSubmitting
+                                ? "rgba(251, 140, 0, 0.5)"
+                                : "primary.main",
+                              borderColor: isSubmitting
+                                ? "rgba(251, 140, 0, 0.5)"
+                                : "primary.main",
+                              "&:hover": {
+                                borderColor: isSubmitting
+                                  ? "rgba(251, 140, 0, 0.5)"
+                                  : "primary.main",
+                              },
+                              "&:active": {
+                                border: "none",
+                                outline: "none",
+                              },
+                              "&:focus": {
+                                border: "none",
+                                outline: "none",
+                              },
+                            }}
+                          >
+                            Sign In
+                          </LoadingButton>
+
+                          {/* <LoadingButton
+                            loading={!isSubmitting}
+                            loadingPosition="center"
+                            type="submit"
+                            fullWidth
+                            aria-label="login button"
+                            variant="contained"
+                            disabled={isSubmitting}
                             sx={{
                               backgroundColor: "primary.main",
                               borderColor: "primary.main",
@@ -256,7 +323,7 @@ export default function SignIn() {
                             }}
                           >
                             Sign In
-                          </Button>
+                          </LoadingButton> */}
                         </Grid>
                       </Grid>
                     </Form>

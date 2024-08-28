@@ -1,36 +1,25 @@
 import { Box } from "@mui/material";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
-import { MuiList } from "../components/MuiList";
-// import { reportsList } from "../data/reports";
-import { useCallback, useEffect, useState } from "react";
+
 import DescriptionIcon from "@mui/icons-material/Description";
+import PdfViewer from "../components/pdfViewer/PdfViewer";
+import { useCallback, useEffect, useState } from "react";
 import encryptData from "../helpers/encryption";
 import decryptData from "../helpers/decryption";
 import Loader from "../components/loader/Loader";
-import useScrollToTop from "../hooks/useScrollToTop";
 import { slideInRight } from "../helpers/animations";
 
-const Reports = () => {
-  useScrollToTop();
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [reportsData, setReportsData] = useState([]);
+const ViewDocument = () => {
   const [loading, setLoading] = useState(false);
+  const [reportFile, setReportFile] = useState("");
 
-  // Filter reportsList based on searchQuery
-  const filteredList = searchQuery
-    ? reportsData.filter((report) =>
-        report.name.toLowerCase().includes(searchQuery)
-      )
-    : reportsData;
-
-  const getReports = useCallback(async () => {
-    const body = { meetingDetailId: "494" }; //TODO
+  const getReportDetails = useCallback(async () => {
+    const body = { meetingDetailId: 4417 };
     try {
       setLoading(true);
       const encryptedData = encryptData(body);
       const response = await fetch(
-        "/BoardMeetingApi/api/Meeting/GetMeetingDetails",
+        "/BoardMeetingApi/api/Meeting/GetReportPathDetails",
         {
           method: "POST",
           headers: {
@@ -49,22 +38,53 @@ const Reports = () => {
       const result = await response.text();
 
       const responseData = decryptData(result);
-      console.log("responseData", responseData?.success, responseData);
+      console.log("asdfasdfasfdasfd", responseData);
       if (responseData?.success) {
-        setReportsData(responseData?.data);
+        setReportFile(responseData?.data?.ReportPath ?? "");
+        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       console.error("Error making POST request:", error);
       setLoading(false);
+      // throw new Error("Somethings went wrong");
     }
   }, []);
   useEffect(() => {
-    getReports();
-  }, [getReports]);
+    getReportDetails();
+  }, [getReportDetails]);
+
+  console.log({ reportFile });
+
+  function getDocumentUrl(reportFile) {
+    try {
+      // Decode base64 string to binary string
+      const binaryString = atob(reportFile);
+      // Convert binary string to Uint8Array
+      const arrayBuffer = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        arrayBuffer[i] = binaryString.charCodeAt(i);
+      }
+      // Create Blob from Uint8Array
+      const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+      // Create URL for the Blob
+      const url = window.URL.createObjectURL(blob);
+
+      return url;
+    } catch (error) {
+      console.error("Error generating document URL:", error);
+      return null;
+    }
+  }
+
+  // Example usage
+  const reportFiles =
+    "FkEdofSG4YRZrSWSSHON9RQ+tgXRegE1WDEwmRN9soks4sUwNTmQ8S2nNBgSaqWDE2BTvrhgy7hYwtePtinYWP6FIm5tVrKQLC08dBQQF0LHKMo6jwvCLeI+H/XJ/ZoIRTbPrUAdrCXFCVR1U5EA1WE6aiuNJoPNPTAnrQTK9Og=";
+  const documentUrl = getDocumentUrl(reportFiles);
+  console.log("documentUrl", documentUrl);
+
   return (
     <>
-      {loading && !searchQuery ? (
+      {loading ? (
         <Loader />
       ) : (
         <Box
@@ -74,11 +94,10 @@ const Reports = () => {
         >
           <ResponsiveAppBar
             icon={DescriptionIcon}
-            title="Reports"
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
+            title="View PDF"
+            searchQuery={""}
+            setSearchQuery={() => {}}
           />
-
           <Box
             className="poppins"
             sx={{
@@ -87,18 +106,11 @@ const Reports = () => {
               maxWidth: "592px",
               margin: "auto",
               marginTop: {
-                // xs: "24px",
                 lg: "24px",
               },
             }}
           >
-            <MuiList
-              listToShow={filteredList}
-              showIcon
-              nextRoute="file/view"
-              setSearchQuery={setSearchQuery}
-              searchQuery={searchQuery}
-            />
+            <PdfViewer />
           </Box>
         </Box>
       )}
@@ -106,4 +118,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default ViewDocument;

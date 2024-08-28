@@ -137,9 +137,12 @@ export default function SearchAppBar({
 
           <Search
             sx={{
+              visibility: location.pathname?.includes("/file/view")
+                ? "hidden"
+                : "visible",
               display: {
-                xs: "none", // Hidden on extra-small screens
-                lg: "block", // Visible on large screens
+                xs: "none",
+                lg: "block",
               },
             }}
           >

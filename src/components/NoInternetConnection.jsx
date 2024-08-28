@@ -1,6 +1,7 @@
 import { Box, Container, Typography } from "@mui/material";
 import offlineImage from "../assets/img/offline_image.svg";
 const NoInternetConnection = () => {
+  //TODO hanlde offline and all validation and offline data show background script
   return (
     <Container
       sx={{

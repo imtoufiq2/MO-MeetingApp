@@ -1,7 +1,22 @@
+// import { defineConfig } from 'vite'
+// import react from '@vitejs/plugin-react'
+
+// // https://vitejs.dev/config/
+// export default defineConfig({
+//   plugins: [react()],
+// })
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      '/BoardMeetingApi': {
+        target: 'https://myzonebeta.motilaloswal.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/BoardMeetingApi/, '/BoardMeetingApi'),
+      },
+    },
+  },
 })

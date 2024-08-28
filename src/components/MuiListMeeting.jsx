@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import EmptyState from "./EmptyState";
 import DateDisplay from "./dateDisplay/DateDisplay";
+import getTimeFromDateTime from "../helpers/timeFromDateTime";
+import getDateDetails from "../helpers/getDateDetails";
 
 export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
   const navigate = useNavigate();
@@ -36,12 +38,12 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
           flexDirection: "column",
         }}
       >
-        {listToShow.length === 0 ? (
+        {listToShow.length === 0 && searchQuery !== "" ? (
           <EmptyState />
         ) : (
           listToShow?.map((item) => (
             <ListItem
-              onClick={() => navigate(`/reports/${item.id}`)}
+              onClick={() => navigate(`/reports/${item.MeetingID ?? 0}`)}
               key={item.id}
               sx={{
                 display: "flex",
@@ -74,9 +76,13 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                   gap: "8px",
                 }}
               >
+                {console.log(
+                  "check the fucntion ",
+                  getDateDetails(item?.MeetingDate)
+                )}
                 <DateDisplay
-                  dateTorender={item.day}
-                  monthTorender={item.month}
+                  dateTorender={getDateDetails(item?.MeetingDate)?.day ?? 0}
+                  monthTorender={getDateDetails(item?.MeetingDate)?.month ?? 0}
                 />
                 <Typography
                   variant="body2"
@@ -88,7 +94,7 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                     margin: "auto",
                   }}
                 >
-                  2023
+                  {getDateDetails(item?.MeetingDate)?.year ?? 0}
                 </Typography>
               </Box>
               <ListItemText
@@ -106,7 +112,7 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                       },
                     }}
                   >
-                    {item.address}
+                    {item.MeetingVenue}
                   </Typography>
                 }
                 secondary={
@@ -121,10 +127,10 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                     }}
                   >
                     <Typography variant="body2">
-                      Start time: {item.startTime}
+                      Start time: {getTimeFromDateTime(item.MeetingStartTime)}
                     </Typography>
                     <Typography variant="body2">
-                      End time: {item.endTime}
+                      End time: {getTimeFromDateTime(item.MeetingEndTime)}
                     </Typography>
                   </Box>
                 }
@@ -146,7 +152,7 @@ MuiListMeeting.propTypes = {
       day: PropTypes.number.isRequired,
       month: PropTypes.string.isRequired,
       year: PropTypes.number.isRequired,
-      address: PropTypes.string.isRequired,
+      MeetingVenue: PropTypes.string.isRequired,
     })
   ).isRequired,
   showIcon: PropTypes.bool,
