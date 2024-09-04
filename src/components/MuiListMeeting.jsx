@@ -38,12 +38,21 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
           flexDirection: "column",
         }}
       >
-        {listToShow.length === 0 && searchQuery !== "" ? (
+        {console.log(
+          "value is ",
+          listToShow.length,
+          searchQuery !== "",
+          searchQuery?.length
+        )}
+        {listToShow.length === 0 &&
+        (searchQuery !== "" || searchQuery === "") ? (
           <EmptyState />
         ) : (
           listToShow?.map((item) => (
             <ListItem
-              onClick={() => navigate(`/reports/${item.MeetingID ?? 0}`)}
+              onClick={() =>
+                navigate(`/boardmeeting/reports/${item.MeetingID ?? 0}`)
+              }
               key={item.id}
               sx={{
                 display: "flex",
@@ -76,15 +85,12 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                   gap: "8px",
                 }}
               >
-                {console.log(
-                  "check the fucntion ",
-                  getDateDetails(item?.MeetingDate)
-                )}
                 <DateDisplay
                   dateTorender={getDateDetails(item?.MeetingDate)?.day ?? 0}
                   monthTorender={getDateDetails(item?.MeetingDate)?.month ?? 0}
+                  yearToRender={getDateDetails(item?.MeetingDate)?.year ?? 0}
                 />
-                <Typography
+                {/* <Typography
                   variant="body2"
                   sx={{
                     whiteSpace: "nowrap",
@@ -95,7 +101,7 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                   }}
                 >
                   {getDateDetails(item?.MeetingDate)?.year ?? 0}
-                </Typography>
+                </Typography> */}
               </Box>
               <ListItemText
                 primary={
@@ -103,7 +109,10 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                     variant="h5"
                     component="h5"
                     sx={{
-                      fontSize: "18px",
+                      fontSize: {
+                        xs: "16px",
+                        lg: "18px",
+                      },
                       letterSpacing: "-0.3px",
                       fontWeight: "500",
                       marginBottom: {
@@ -112,7 +121,9 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                       },
                     }}
                   >
-                    {item.MeetingVenue}
+                    {item.MeetingVenue
+                      ? item.MeetingVenue
+                      : "No venue specified"}
                   </Typography>
                 }
                 secondary={

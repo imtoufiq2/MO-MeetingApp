@@ -35,8 +35,10 @@ export default function SignIn() {
     const body = {
       iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
       authType: "client_credentials",
-      clientCode: "kailash.purohit@motilaloswal.com",
-      password: "bW9zbEAxMjM0",
+      // clientCode: "kailash.purohit@motilaloswal.com",
+      // password: "bW9zbEAxMjM0",
+      clientCode: values?.email,
+      password: values?.password,
       clientToken: "",
     };
 
@@ -56,11 +58,21 @@ export default function SignIn() {
 
       const responseData = decryptData(result);
 
-      console.log("responseData", responseData);
+      console.log("responseData", responseData?.data);
 
       if (responseData?.success) {
         sessionStorage.setItem("loginData", JSON.stringify(responseData?.data));
-        navigate("/");
+        sessionStorage.setItem(
+          "a3YvZ1qP",
+          encryptData(
+            JSON.stringify({
+              clientCode: values?.email,
+              // password: values?.password,
+            })
+          )
+        );
+
+        navigate("/boardmeeting");
         resetForm();
       } else if (responseData?.message) {
         toast.error(responseData?.message);
@@ -96,7 +108,17 @@ export default function SignIn() {
           minWidth: "100vw",
         }}
       >
-        <Grid container spacing={3}>
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            backgroundColor: "orange",
+            maxWidth: "95%",
+            margin: "auto",
+            paddingBottom: "24px",
+            borderRadius: "8px",
+          }}
+        >
           <Grid item xs={12} textAlign="center">
             {/* <img
               src={brandingLogo}
@@ -125,14 +147,14 @@ export default function SignIn() {
                   alignItems: "center",
                 }}
               >
-                <Stack alignItems="center">
+                {/* <Stack alignItems="center">
                   <Typography
                     variant="h5"
                     sx={{ color: "primary.main", fontWeight: 500 }}
                   >
                     Login
                   </Typography>
-                </Stack>
+                </Stack> */}
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={validationSchema}
@@ -148,15 +170,16 @@ export default function SignIn() {
                     submitCount,
                     isSubmitting,
                   }) => (
-                    <Form style={{ width: "100%" }}>
+                    <Form id="_sign_in" style={{ width: "100%" }}>
                       <Grid
                         container
                         spacing={2}
                         direction="column"
                         sx={{
                           mt: 1,
+                          // paddingLeft: "0px",
                           width: {
-                            xs: "100%",
+                            // xs: "100%",
                             sm: "450px",
                           },
                           margin: {
@@ -164,8 +187,17 @@ export default function SignIn() {
                           },
                         }}
                       >
-                        <Grid item xs={12}>
-                          <FormControl variant="standard" fullWidth>
+                        <Grid
+                          item
+                          id="_our_grid"
+                          xs={12}
+                          style={{ paddingLeft: "0px" }}
+                        >
+                          <FormControl
+                            variant="standard"
+                            fullWidth
+                            // sx={{ paddingLeft: "0px" }}
+                          >
                             <Typography className="label d-flex items-center">
                               Email
                               <sup className="asc">*</sup>
@@ -197,7 +229,7 @@ export default function SignIn() {
                           </FormControl>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{ padding: "0px" }}>
                           <FormControl variant="standard" fullWidth>
                             <Typography className="label d-flex items-center">
                               Password
@@ -249,9 +281,15 @@ export default function SignIn() {
 
                         <Grid
                           item
+                          style={{ paddingLeft: "0px" }}
                           xs={6}
                           alignItems="flex-end"
-                          onClick={() => navigate("/forgot-password")}
+                          sx={{
+                            width: "fit-content",
+                          }}
+                          onClick={() =>
+                            navigate("/boardmeeting/forgot-password")
+                          }
                         >
                           <Link
                             component="button"
@@ -264,7 +302,7 @@ export default function SignIn() {
                             </Typography>
                           </Link>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{ paddingLeft: "0px" }}>
                           <LoadingButton
                             loading={isSubmitting}
                             loadingPosition="center"
@@ -295,7 +333,7 @@ export default function SignIn() {
                               },
                             }}
                           >
-                            Sign In
+                            Login
                           </LoadingButton>
 
                           {/* <LoadingButton

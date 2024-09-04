@@ -4,6 +4,7 @@ import InputBase from "@mui/material/InputBase";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
+import { useEffect, useRef } from "react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -29,7 +30,6 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
 }));
-
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   width: "100%",
@@ -37,16 +37,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
-
     borderRadius: "8px", // Border radius
-    border: `2px solid transparent`, // Default border to prevent shift on focus
-    boxShadow: `0px 0px 4px ${alpha(theme.palette.common.black, 0.2)}`, // Default box shadow
+    border: `2px solid #dcd8d4b3`, // Gray border in normal state
+    outline: "none", // Remove default outline
 
     "&:focus": {
       width: "100%", // Full width on focus
       border: `2px solid #f9af29`, // Orange border color on focus
-      outline: "none", // Remove default outline
     },
+
     [theme.breakpoints.up("sm")]: {
       width: "100%",
       "&:focus": {
@@ -57,12 +56,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const SearchBar = ({ searchQuery, setSearchQuery }) => {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
   return (
     <Search
       sx={{
         display: {
-          xs: "block", // Hidden on extra-small screens
-          lg: "none", // Visible on large screens
+          xs: "block",
+          lg: "none",
         },
         marginBottom: "12px",
       }}
@@ -75,6 +81,7 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
         inputProps={{ "aria-label": "search" }}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
+        // inputRef={inputRef}
       />
       {searchQuery?.length > 0 && (
         <IconButton

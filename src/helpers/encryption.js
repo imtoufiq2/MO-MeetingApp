@@ -14,7 +14,7 @@ const encryptData = (data) => {
     mode: CryptoJS.mode.CBC,
     padding: CryptoJS.pad.Pkcs7,
   });
-  console.log("Encrypted Data:", encrypted.toString());
+
   return encrypted.toString();
 };
 

@@ -9,20 +9,45 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import encryptData from "../helpers/encryption";
 import decryptData from "../helpers/decryption";
 import Loader from "../components/loader/Loader";
-import EmptyState from "../components/EmptyState";
-import { useParams } from "react-router-dom";
+// import EmptyState from "../components/EmptyState";
+import { useNavigate, useParams } from "react-router-dom";
 import { slideInRight } from "../helpers/animations";
 
 const Meetings = () => {
+  const navigate = useNavigate();
   useScrollToTop();
   const { id } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [meetingsData, setMeetingsData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = (value) => {
-    setSearchQuery(value.trim().toLowerCase());
-  };
+  useEffect(() => {
+    if (!JSON.parse(sessionStorage.getItem("loginData"))?.accessToken) {
+      navigate("/boardmeeting/sign-in");
+      return;
+    }
+  }, [navigate]);
+
+  // const handleSearch = (value) => {
+  //   setSearchQuery(value.trim().toLowerCase());
+  // };
+  function sortMeetingsByDateAndTimeDesc(meetings) {
+    return meetings.sort((a, b) => {
+      // Convert MeetingDate to Date objects for comparison
+      const dateA = new Date(a.MeetingDate);
+      const dateB = new Date(b.MeetingDate);
+
+      // Compare by MeetingDate first (in descending order)
+      if (dateA > dateB) return -1;
+      if (dateA < dateB) return 1;
+
+      // If MeetingDate is the same, compare by MeetingStartTime (in descending order)
+      const timeA = new Date(a.MeetingStartTime);
+      const timeB = new Date(b.MeetingStartTime);
+
+      return timeB - timeA;
+    });
+  }
 
   const filteredList = searchQuery
     ? meetingsData.filter(
@@ -48,7 +73,9 @@ const Meetings = () => {
           Authorization: `Bearer ${
             JSON.parse(sessionStorage.getItem("loginData"))?.accessToken
           }`,
-          clientCode: "kailash.purohit@motilaloswal.com",
+          clientCode: JSON.parse(
+            decryptData(sessionStorage.getItem("a3YvZ1qP"))
+          )?.clientCode,
           "Accept-Encoding": "br",
         },
         body: encryptedData,
@@ -57,12 +84,36 @@ const Meetings = () => {
       const result = await response.text();
 
       const responseData = decryptData(result);
-      console.log("responseData", responseData?.success, responseData?.data);
+      // console.log(
+      //   "responseData",
+      //   sortMeetingsByDateAndTimeDesc(responseData?.data)
+      // );
       if (responseData?.success) {
-        setMeetingsData(responseData?.data);
+        setMeetingsData(
+          sortMeetingsByDateAndTimeDesc(responseData?.data) ?? []
+        );
+        // setMeetingsData([]);
+        sessionStorage.setItem(
+          "xYz123!@#",
+          encryptData(
+            JSON.stringify({
+              meetingData:
+                sortMeetingsByDateAndTimeDesc(responseData?.data) ?? [],
+            })
+          )
+        );
       }
     } catch (error) {
       console.error("Error making POST request:", error);
+      if (!navigator.onLine) {
+        const storedData = sessionStorage.getItem("xYz123!@#");
+        if (storedData) {
+          const decryptedData = JSON.parse(decryptData(storedData));
+          setMeetingsData(decryptedData?.meetingData ?? []);
+        } else {
+          console.warn("No data found in session storage.");
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -73,13 +124,9 @@ const Meetings = () => {
 
   return (
     <>
-      {loading ? (
+      {console.log("asdfasdfasd", loading, !searchQuery)}
+      {loading && !searchQuery ? (
         <Loader />
-      ) : !loading && meetingsData?.length === 0 ? (
-        <EmptyState
-          title="No data available"
-          subTitle="We couldn't retrieve any data from the server."
-        />
       ) : (
         <Box
           sx={{
@@ -89,15 +136,15 @@ const Meetings = () => {
           <ResponsiveAppBar
             icon={Groups2Icon}
             title="Meetings"
-            handleSearch={handleSearch}
+            // handleSearch={handleSearch}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
           <Box
             className="poppins"
             sx={{
-              minHeight: "100vh",
-              overflow: "hidden",
+              // minHeight: "fitContent",
+              // overflow: "scroll",
               maxWidth: "592px",
               margin: "auto",
               marginTop: {

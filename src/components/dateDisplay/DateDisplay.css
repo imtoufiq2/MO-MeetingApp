@@ -4,8 +4,9 @@ figure.date-display-figure {
     margin: 0px;
     height: 70px;
     border-radius: 10px;
-    border: #bbbbbb 1px solid;
+    border: #bbbbbbc9 1px solid;
     position: relative;
+    overflow: hidden;
   }
 
   figure.date-display-figure:before {
@@ -15,10 +16,11 @@ figure.date-display-figure {
   }
 
   header.date-display-header {
-    width: 70px;
+    width: 75px;
+    margin-left: -2px;
     height: 20px;
     position: absolute;
-    top: 0px;
+    top: -2px;
     background-color: orange;
     border-radius: 10px 10px 0 0;
     /* border-bottom: 3px solid #e5e5e5; */

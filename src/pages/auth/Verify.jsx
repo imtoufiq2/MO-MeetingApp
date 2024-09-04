@@ -8,7 +8,7 @@ import { FormControl, Stack } from "@mui/material";
 import "./auth.css";
 import { useNavigate } from "react-router-dom";
 import ResponsiveImage from "../../components/Logo";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const numberOfDigits = 4;
 export default function VerifyMobile() {
@@ -58,6 +58,29 @@ export default function VerifyMobile() {
       // });
     }
   }
+
+  const [timer, setTimer] = useState(10);
+  const [showTimer, setShowTimer] = useState(true);
+
+  const formattedTimer = useMemo(() => {
+    const minutes = Math.floor(timer / 60);
+    const seconds = timer % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }, [timer]);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else {
+      setShowTimer(false);
+    }
+    return () => clearInterval(interval);
+  }, [showTimer, timer]);
 
   function handleChange(value, index) {
     if (value.length <= 1 && !isNaN(value) && value !== "e") {
@@ -194,7 +217,28 @@ export default function VerifyMobile() {
                           ))}
                         </Stack>
                       </Box>
-
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "end",
+                          maxHeight: "30px",
+                          marginBottom: "-12px",
+                        }}
+                      >
+                        {!showTimer ? (
+                          <Button
+                            sx={{ border: "1px solid " }}
+                            onClick={() => {
+                              setShowTimer(true);
+                              setTimer(10);
+                            }}
+                          >
+                            Resent OTP
+                          </Button>
+                        ) : (
+                          <Typography variant="p">{formattedTimer}</Typography>
+                        )}
+                      </Box>
                       <Box
                         sx={{
                           display: "flex",
@@ -220,14 +264,14 @@ export default function VerifyMobile() {
                             },
                             "&:focus": { border: "none", outline: "none" },
                           }}
-                          onClick={() => navigate("/sign-in")}
+                          onClick={() => navigate("/boardmeeting/sign-in")}
                         >
                           Cancel
                         </Button>
 
                         <Button
                           fullWidth
-                          onClick={() => navigate("/")}
+                          onClick={() => navigate("/boardmeeting")}
                           variant="contained"
                           sx={{
                             backgroundColor: "primary.main",

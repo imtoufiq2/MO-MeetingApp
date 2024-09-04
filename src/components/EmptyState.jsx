@@ -15,7 +15,7 @@ const EmptyState = ({
         minHeight: "240px",
         bgcolor: "background.paper",
         textAlign: "center",
-        border: "1px solid",
+        // border: "1px solid",
         borderColor: "#D7DFE9",
         maxWidth: "592px",
         borderRadius: 2,

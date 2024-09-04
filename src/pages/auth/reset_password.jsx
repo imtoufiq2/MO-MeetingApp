@@ -17,7 +17,7 @@ export default function ResetPassword() {
     // Handle form submission
     console.log(values);
     // Navigate after successful form submission
-    navigate("/verify-otp");
+    navigate("/boardmeeting/verify-otp");
     resetForm();
   };
 
@@ -26,8 +26,8 @@ export default function ResetPassword() {
     phoneNumber: Yup.number()
       .typeError("Invalid phone number")
       .integer("Phone number must be an integer")
-      .min(1000000000, "Phone number must be exactly 10 digits")
-      .max(9999999999, "Phone number must be exactly 10 digits")
+      .min(1000000000, "Phone number must be 10 digits")
+      .max(9999999999, "Phone number must be 10 digits")
       .required("Phone number is required"),
   });
 
@@ -118,6 +118,7 @@ export default function ResetPassword() {
                                 name="phoneNumber"
                                 as={BootstrapInput}
                                 fullWidth
+                                type="number"
                                 id="phoneNumber"
                                 size="small"
                                 placeholder="Enter Registered Mobile Number"
@@ -190,7 +191,9 @@ export default function ResetPassword() {
                                     outline: "none",
                                   },
                                 }}
-                                onClick={() => navigate("/sign-in")}
+                                onClick={() =>
+                                  navigate("/boardmeeting/sign-in")
+                                }
                               >
                                 Cancel
                               </Button>

@@ -5,19 +5,27 @@ import { useEffect, useState } from "react";
 import { MuiList } from "../components/MuiList";
 // import { departmentList } from "../data/departmentList";
 import useScrollToTop from "../hooks/useScrollToTop";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import decryptData from "../helpers/decryption";
 import { groupDataByCompany } from "../helpers/groupDataByCompany";
 import Loader from "../components/loader/Loader";
 import { slideInRight } from "../helpers/animations";
 
 const Department = () => {
+  const navigate = useNavigate();
   useScrollToTop();
   const { id } = useParams();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [departmentData, setDepartmentData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!JSON.parse(sessionStorage.getItem("loginData"))?.accessToken) {
+      navigate("/boardmeeting/sign-in");
+      return;
+    }
+  }, [navigate]);
 
   const handleSearch = (value) => {
     setSearchQuery(value.trim().toLowerCase());
@@ -45,12 +53,17 @@ const Department = () => {
   //   console.log({ companyCommittees });
   //   setDepartmentData(companyCommittees);
   // }, [id]);
+
   useEffect(() => {
     if (!id) return;
 
     setLoading(true); // Start loading
 
     const timer = setTimeout(() => {
+      if (!sessionStorage.getItem("companiesData")) {
+        setDepartmentData([]);
+        return;
+      }
       const companiesData = JSON.parse(
         decryptData(sessionStorage.getItem("companiesData"))
       );
@@ -60,7 +73,6 @@ const Department = () => {
         (data) => data.CompanyID === +id
       )?.Committees;
 
-      console.log({ companyCommittees });
       setDepartmentData(companyCommittees);
       setLoading(false);
     }, 300);
@@ -88,8 +100,8 @@ const Department = () => {
           <Box
             className="poppins"
             sx={{
-              minHeight: "100vh",
-              overflow: "hidden",
+              // minHeight: "100vh",
+              // overflow: "hidden",
               maxWidth: "592px",
               margin: "auto",
               marginTop: {

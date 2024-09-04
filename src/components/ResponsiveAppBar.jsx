@@ -10,6 +10,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import { Button, IconButton, Stack } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -55,18 +56,25 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function SearchAppBar({
   icon: Icon,
   title,
-
   searchQuery,
   setSearchQuery,
+  logo,
 }) {
+  console.log({ logo });
   const navigate = useNavigate();
   const location = useLocation();
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus(); // Auto-focus the input field on component mount
+    }
+  }, []);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
         <Toolbar sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Stack direction="row" gap={2} flexGrow={1} alignItems="center">
-            {location?.pathname !== "/" && (
+            {location?.pathname !== "/boardmeeting" && (
               <>
                 <IconButton
                   onClick={() => navigate(-1)}
@@ -125,10 +133,12 @@ export default function SearchAppBar({
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
-                paddingRight: location?.pathname !== "/" ? "38px" : "0px",
+                paddingRight:
+                  location?.pathname !== "/boardmeeting" ? "38px" : "0px",
               }}
             >
               <Icon sx={{ fontSize: 40 }} />
+              {/* <img src={logo} alt="" /> */}
               <Typography variant="h6" noWrap component="div">
                 {title}
               </Typography>
@@ -143,6 +153,10 @@ export default function SearchAppBar({
               display: {
                 xs: "none",
                 lg: "block",
+                border: "1.3px solid white",
+                "& .MuiInputBase-input::placeholder": {
+                  color: "white",
+                },
               },
             }}
           >
@@ -154,6 +168,7 @@ export default function SearchAppBar({
               inputProps={{ "aria-label": "search" }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              // inputRef={inputRef}
             />
 
             {searchQuery?.length > 0 && (
@@ -168,7 +183,7 @@ export default function SearchAppBar({
                   outline: "none",
                 }}
               >
-                <ClearIcon />
+                <ClearIcon color="warning" />
               </IconButton>
             )}
           </Search>
@@ -183,6 +198,6 @@ SearchAppBar.propTypes = {
   icon: PropTypes.elementType.isRequired,
   title: PropTypes.string.isRequired,
   searchQuery: PropTypes.string.isRequired,
-  handleSearch: PropTypes.func,
+  // handleSearch: PropTypes.func,
   setSearchQuery: PropTypes.func.isRequired,
 };

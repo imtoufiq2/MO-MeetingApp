@@ -13,6 +13,8 @@ import { ErrorBoundary } from "react-error-boundary";
 // import ViewPdf from "../pages/ViewPdf";
 // import { ErrorBoundary } from "react-error-boundary";
 import SomethingWentWrong from "../components/SomethingWentWrong";
+import FaceAuth from "../pages/FaceAuth";
+// import { PrivateRoute } from "../../privateRoute";
 // import { useEffect, useState } from "react";
 // import NoInternetConnection from "../components/NoInternetConnection";
 
@@ -36,17 +38,23 @@ const Routers = () => {
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Routes>
-        <Route path="/" element={<AssociatedCompanies />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/verify-otp" element={<VerifyMobile />} />
-        <Route path="/forgot-password" element={<ResetPassword />} />
+        {/* <Route element={<PrivateRoute />}> */}
+        <Route path="/boardmeeting" element={<AssociatedCompanies />} />
+        {/* </Route> */}
+        <Route path="/boardmeeting/sign-in" element={<SignIn />} />
+        <Route path="/boardmeeting/verify-otp" element={<VerifyMobile />} />
+        <Route path="/boardmeeting/face-auth" element={<FaceAuth />} />
+        <Route
+          path="/boardmeeting/forgot-password"
+          element={<ResetPassword />}
+        />
 
-        <Route path="/department/:id" element={<Department />} />
-        <Route path="/meetings/:id" element={<Meetings />} />
-        <Route path="/reports/:id" element={<Reports />} />
+        <Route path="/boardmeeting/department/:id" element={<Department />} />
+        <Route path="/boardmeeting/meetings/:id" element={<Meetings />} />
+        <Route path="/boardmeeting/reports/:id" element={<Reports />} />
 
         {/* <Route path="/file/view" element={<ViewDocument />} /> */}
-        <Route path="/file/view/:id" element={<ViewDocument />} />
+        <Route path="/boardmeeting/file/view/:id" element={<ViewDocument />} />
 
         {/* <Route path="/view-pdf/:id" element={<ViewPdf />} /> */}
         <Route path="/*" element={<>No page found</>} />

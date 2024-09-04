@@ -20,12 +20,14 @@ export const MuiList = ({
   searchQuery,
   listToShow,
   loading,
+  logo,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   console.log("locaton data", location.pathname.includes("/reports"));
   const handleSearchChange = (query) => {
-    setSearchQuery(query.toLowerCase());
+    setSearchQuery(query.toLowerCase() ?? "");
+    console.log(query);
   };
 
   return (
@@ -44,6 +46,7 @@ export const MuiList = ({
         searchQuery={searchQuery}
         setSearchQuery={handleSearchChange}
       />
+      {/* {console.log({ searchQuery, setSearchQuery })} */}
       <List
         sx={{
           gap: {
@@ -57,17 +60,21 @@ export const MuiList = ({
         {listToShow.length === 0 && !loading ? (
           <EmptyState />
         ) : (
-          listToShow.map((cur) => (
+          listToShow.map((cur, index) => (
             <ListItem
-              key={cur.id}
+              key={index}
               disablePadding
               onClick={() => {
                 if (cur.CompanyID) {
-                  navigate(`/${nextRoute}/${cur.CompanyID ?? 0}`);
+                  navigate(`/boardmeeting/${nextRoute}/${cur.CompanyID ?? 0}`);
                 } else if (cur.CommitteeID ?? 0) {
-                  navigate(`/${nextRoute}/${cur.CommitteeID ?? 0}`);
+                  navigate(
+                    `/boardmeeting/${nextRoute}/${cur.CommitteeID ?? 0}`
+                  );
                 } else {
-                  navigate(`/${nextRoute}/${cur.MeetingDetailID ?? 0}`);
+                  navigate(
+                    `/boardmeeting/${nextRoute}/${cur.MeetingDetailID ?? 0}`
+                  );
                   if (location.pathname.includes("/reports")) {
                     sessionStorage.setItem("url", cur?.ReportPath ?? "");
                   }
@@ -81,29 +88,33 @@ export const MuiList = ({
                 boxShadow: 1,
               }}
             >
-              {console.log("asfdasdfasdfas", cur)}
               <ListItemButton>
                 {showIcon && (
                   <ListItemIcon>
-                    <DescriptionIcon style={{ color: "#e67272" }} />
+                    {/* <DescriptionIcon style={{ color: "#e67272" }} /> */}
+                    <img
+                      src={logo}
+                      alt="pdf-icon"
+                      style={{ width: "35px", height: "35px" }}
+                    />
                   </ListItemIcon>
                 )}
                 <ListItemText
                   primary={
                     <Typography
-                      variant="h5"
-                      component="h5"
+                      variant="h6"
+                      component="h6"
                       sx={{
-                        fontSize: "18px",
+                        fontSize: "16px",
                         letterSpacing: "-0.3px",
                         fontWeight: "500",
                       }}
                     >
-                      {location?.pathname === "/"
+                      {location?.pathname === "/boardmeeting"
                         ? cur?.CompanyName
-                        : location.pathname.includes("/reports")
+                        : location.pathname.includes("/boardmeeting/reports")
                         ? cur?.ReportName
-                        : location.pathname.includes("/department")
+                        : location.pathname.includes("/boardmeeting/department")
                         ? cur.CommitteeName
                         : cur.name}
                     </Typography>
