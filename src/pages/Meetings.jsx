@@ -93,8 +93,11 @@ const Meetings = () => {
           sortMeetingsByDateAndTimeDesc(responseData?.data) ?? []
         );
         // setMeetingsData([]);
+        // const previousData = JSON.parse(
+        //   decryptData(sessionStorage.getItem("xYz123!@#"))
+        // );
         sessionStorage.setItem(
-          "xYz123!@#",
+          "xYz123!@#m",
           encryptData(
             JSON.stringify({
               meetingData:
@@ -102,11 +105,20 @@ const Meetings = () => {
             })
           )
         );
+        // sessionStorage.setItem(
+        //   "xYz123!@#",
+        //   encryptData(
+        //     JSON.stringify({
+        //       meetingData:
+        //         sortMeetingsByDateAndTimeDesc(responseData?.data) ?? [],
+        //     })
+        //   )
+        // );
       }
     } catch (error) {
       console.error("Error making POST request:", error);
       if (!navigator.onLine) {
-        const storedData = sessionStorage.getItem("xYz123!@#");
+        const storedData = sessionStorage.getItem("xYz123!@#m");
         if (storedData) {
           const decryptedData = JSON.parse(decryptData(storedData));
           setMeetingsData(decryptedData?.meetingData ?? []);
@@ -124,7 +136,7 @@ const Meetings = () => {
 
   return (
     <>
-      {console.log("asdfasdfasd", loading, !searchQuery)}
+      {/* {console.log("asdfasdfasd", loading, !searchQuery)} */}
       {loading && !searchQuery ? (
         <Loader />
       ) : (

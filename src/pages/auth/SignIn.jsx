@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -13,13 +13,15 @@ import * as Yup from "yup";
 import encryptData from "../../helpers/encryption";
 import decryptData from "../../helpers/decryption";
 import toast from "react-hot-toast";
-// import BaBranding_logo from "../assets/img/BaBranding_logo.png";
-import brandingLogo from "../../assets/img/BaBranding_logo.png";
+// import brandingLogo from "../../assets/img/BaBranding_logo.png";
 import { LoadingButton } from "@mui/lab";
+import OnBoardingLogo from "../../components/logo";
+import { useGlobalHook } from "../../Contexts";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { darkMode } = useGlobalHook();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -28,6 +30,44 @@ export default function SignIn() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const handleGet2FASetting = useCallback(
+    async (Input) => {
+      try {
+        const encryptedData = encryptData({
+          Input,
+        });
+        // debugger;
+        const response = await fetch(
+          "/BoardMeetingApi/api/Login/Get2FASetting",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
+            },
+            body: encryptedData,
+          }
+        );
+
+        const result = await response.text();
+        const responseData = decryptData(result);
+        console.log("daasdfasdasss", responseData?.data);
+        if (
+          responseData?.success &&
+          responseData?.data?.[0]?.TwoFactorEnable === "Yes"
+        ) {
+          // console.log("daasdfasda", responseData); call the send otp
+        } else {
+          navigate("/boardmeeting/companies");
+          // resetForm();
+        }
+      } catch (error) {
+        console.error("Error making POST request:", error);
+        toast.error("Something went wrong");
+      }
+    },
+    [navigate]
+  );
 
   const handleSubmit = async (values, { resetForm, setSubmitting }) => {
     console.log("values is", values);
@@ -55,11 +95,7 @@ export default function SignIn() {
       });
 
       const result = await response.text();
-
       const responseData = decryptData(result);
-
-      console.log("responseData", responseData?.data);
-
       if (responseData?.success) {
         sessionStorage.setItem("loginData", JSON.stringify(responseData?.data));
         sessionStorage.setItem(
@@ -71,9 +107,10 @@ export default function SignIn() {
             })
           )
         );
-
-        navigate("/boardmeeting");
-        resetForm();
+        // call two auth api here
+        await handleGet2FASetting(values?.email);
+        // navigate("/boardmeeting/companies");
+        // resetForm();
       } else if (responseData?.message) {
         toast.error(responseData?.message);
       }
@@ -108,23 +145,8 @@ export default function SignIn() {
           minWidth: "100vw",
         }}
       >
-        <Grid
-          container
-          spacing={3}
-          sx={{
-            backgroundColor: "orange",
-            maxWidth: "95%",
-            margin: "auto",
-            paddingBottom: "24px",
-            borderRadius: "8px",
-          }}
-        >
-          <Grid item xs={12} textAlign="center">
-            {/* <img
-              src={brandingLogo}
-              alt="logo"
-              style={{ borderRadius: "10px", width: "150px", height: "100px" }}
-            /> */}
+        <Grid container spacing={3}>
+          {/* <Grid item xs={12} textAlign="center">
             <Box
               component="img"
               src={brandingLogo}
@@ -136,7 +158,8 @@ export default function SignIn() {
                 objectFit: "inherit",
               }}
             />
-          </Grid>
+          </Grid> */}
+          <OnBoardingLogo />
 
           <Grid item xs={12}>
             <Container component="main" maxWidth="2xl">
@@ -147,14 +170,14 @@ export default function SignIn() {
                   alignItems: "center",
                 }}
               >
-                {/* <Stack alignItems="center">
+                <Stack alignItems="center">
                   <Typography
                     variant="h5"
                     sx={{ color: "primary.main", fontWeight: 500 }}
                   >
                     Login
                   </Typography>
-                </Stack> */}
+                </Stack>
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={validationSchema}
@@ -170,16 +193,15 @@ export default function SignIn() {
                     submitCount,
                     isSubmitting,
                   }) => (
-                    <Form id="_sign_in" style={{ width: "100%" }}>
+                    <Form style={{ width: "100%" }}>
                       <Grid
                         container
                         spacing={2}
                         direction="column"
                         sx={{
                           mt: 1,
-                          // paddingLeft: "0px",
                           width: {
-                            // xs: "100%",
+                            xs: "100%",
                             sm: "450px",
                           },
                           margin: {
@@ -187,18 +209,16 @@ export default function SignIn() {
                           },
                         }}
                       >
-                        <Grid
-                          item
-                          id="_our_grid"
-                          xs={12}
-                          style={{ paddingLeft: "0px" }}
-                        >
+                        <Grid item xs={12}>
                           <FormControl
                             variant="standard"
                             fullWidth
-                            // sx={{ paddingLeft: "0px" }}
+                            id="_form-control"
                           >
-                            <Typography className="label d-flex items-center">
+                            <Typography
+                              className="label d-flex items-center"
+                              style={{ color: darkMode && "#ffae18" }}
+                            >
                               Email
                               <sup className="asc">*</sup>
                             </Typography>
@@ -209,6 +229,10 @@ export default function SignIn() {
                               id="email"
                               size="small"
                               placeholder="Email"
+                              style={{
+                                backgroundColor: "white",
+                                borderRadius: "8px",
+                              }}
                               value={values.email}
                               onChange={handleChange}
                               error={
@@ -229,9 +253,12 @@ export default function SignIn() {
                           </FormControl>
                         </Grid>
 
-                        <Grid item xs={12} style={{ padding: "0px" }}>
+                        <Grid item xs={12}>
                           <FormControl variant="standard" fullWidth>
-                            <Typography className="label d-flex items-center">
+                            <Typography
+                              className="label d-flex items-center"
+                              style={{ color: darkMode && "#ffae18" }}
+                            >
                               Password
                               <sup className="asc">*</sup>
                             </Typography>
@@ -255,6 +282,7 @@ export default function SignIn() {
                                     aria-label="toggle password visibility"
                                     onClick={handleClickShowPassword}
                                     onMouseDown={handleMouseDownPassword}
+                                    onMouseUp={handleMouseDownPassword}
                                     edge="end"
                                   >
                                     {showPassword ? (
@@ -281,15 +309,9 @@ export default function SignIn() {
 
                         <Grid
                           item
-                          style={{ paddingLeft: "0px" }}
                           xs={6}
                           alignItems="flex-end"
-                          sx={{
-                            width: "fit-content",
-                          }}
-                          onClick={() =>
-                            navigate("/boardmeeting/forgot-password")
-                          }
+                          onClick={() => navigate("/boardmeeting/enter-mobile")}
                         >
                           <Link
                             component="button"
@@ -297,12 +319,15 @@ export default function SignIn() {
                             underline="none"
                             sx={{ cursor: "pointer" }}
                           >
-                            <Typography variant="caption">
-                              Forgot password?
+                            <Typography
+                              variant="caption"
+                              style={{ color: darkMode && "#ffffffa8" }}
+                            >
+                              Reset password?
                             </Typography>
                           </Link>
                         </Grid>
-                        <Grid item xs={12} style={{ paddingLeft: "0px" }}>
+                        <Grid item xs={12}>
                           <LoadingButton
                             loading={isSubmitting}
                             loadingPosition="center"
@@ -333,35 +358,8 @@ export default function SignIn() {
                               },
                             }}
                           >
-                            Login
-                          </LoadingButton>
-
-                          {/* <LoadingButton
-                            loading={!isSubmitting}
-                            loadingPosition="center"
-                            type="submit"
-                            fullWidth
-                            aria-label="login button"
-                            variant="contained"
-                            disabled={isSubmitting}
-                            sx={{
-                              backgroundColor: "primary.main",
-                              borderColor: "primary.main",
-                              "&:hover": {
-                                borderColor: "primary.main",
-                              },
-                              "&:active": {
-                                border: "none",
-                                outline: "none",
-                              },
-                              "&:focus": {
-                                border: "none",
-                                outline: "none",
-                              },
-                            }}
-                          >
                             Sign In
-                          </LoadingButton> */}
+                          </LoadingButton>
                         </Grid>
                       </Grid>
                     </Form>

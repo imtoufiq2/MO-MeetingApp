@@ -67,7 +67,7 @@ const Reports = () => {
       if (responseData?.success) {
         setReportsData(responseData?.data);
         sessionStorage.setItem(
-          "xYz123!@#",
+          "xYz123!@#r",
           encryptData(
             JSON.stringify({
               reportData: responseData?.data,
@@ -79,7 +79,7 @@ const Reports = () => {
     } catch (error) {
       console.error("Error making POST request:", error);
       if (!navigator.onLine) {
-        const storedData = sessionStorage.getItem("xYz123!@#");
+        const storedData = sessionStorage.getItem("xYz123!@#r");
         if (storedData) {
           const decryptedData = JSON.parse(decryptData(storedData));
           setReportsData(decryptedData?.reportData ?? []);

@@ -24,7 +24,7 @@ export default function ThemeCustomization({ children }) {
     palette: {
       primary: {
         // main: "#000000", // Black for primary color
-        main: colors.orange[600], // Black for primary color
+        main: "#fbb02f", // Black for primary color
         // main: "#fdaf17", // Black for primary color
         contrastText: "#FFFFFF", // White text on primary
       },

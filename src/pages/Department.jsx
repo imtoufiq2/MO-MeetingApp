@@ -40,20 +40,6 @@ const Department = () => {
       )
     : departmentData;
 
-  // useEffect(() => {
-  //   if (!id) return;
-  //   const companiesData = JSON.parse(
-  //     decryptData(sessionStorage.getItem("companiesData"))
-  //   );
-  //   const groupedData = groupDataByCompany(companiesData);
-
-  //   const companyCommittees = groupedData.find(
-  //     (data) => data.CompanyID === +id
-  //   )?.Committees;
-  //   console.log({ companyCommittees });
-  //   setDepartmentData(companyCommittees);
-  // }, [id]);
-
   useEffect(() => {
     if (!id) return;
 

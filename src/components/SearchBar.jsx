@@ -5,6 +5,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import SearchIcon from "@mui/icons-material/Search";
 import IconButton from "@mui/material/IconButton";
 import { useEffect, useRef } from "react";
+import { useGlobalHook } from "../Contexts";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -30,20 +31,25 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
 }));
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
+const StyledInputBase = styled(InputBase)(({ theme, darkMode }) => ({
+  color: darkMode ? "#fff" : "inherit",
   width: "100%",
+  // backgroundColor: "red",
+  borderRadius: "4px",
+  overflow: "hidden",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     borderRadius: "8px", // Border radius
-    border: `2px solid #dcd8d4b3`, // Gray border in normal state
+    border: !darkMode && `2px solid #dcd8d4b3`, // Gray border in normal state
     outline: "none", // Remove default outline
-
+    "&::placeholder": {
+      color: darkMode && "#ffae18", // Placeholder color
+    },
     "&:focus": {
       width: "100%", // Full width on focus
-      border: `2px solid #f9af29`, // Orange border color on focus
+      border: `${darkMode ? "1px" : "2px"} solid #f9af29`,
     },
 
     [theme.breakpoints.up("sm")]: {
@@ -57,6 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const SearchBar = ({ searchQuery, setSearchQuery }) => {
   const inputRef = useRef(null);
+
+  const { darkMode } = useGlobalHook();
 
   useEffect(() => {
     if (inputRef.current) {
@@ -74,12 +82,13 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
       }}
     >
       <SearchIconWrapper>
-        <SearchIcon />
+        <SearchIcon sx={{ color: "#ffae18" }} />
       </SearchIconWrapper>
       <StyledInputBase
         placeholder="Search…"
         inputProps={{ "aria-label": "search" }}
         value={searchQuery}
+        darkMode={darkMode} // Pass darkMode as a prop
         onChange={(e) => setSearchQuery(e.target.value)}
         // inputRef={inputRef}
       />
@@ -95,7 +104,7 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
             outline: "none",
           }}
         >
-          <ClearIcon />
+          <ClearIcon style={{ color: "#ff3232" }} />
         </IconButton>
       )}
     </Search>

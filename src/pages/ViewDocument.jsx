@@ -41,26 +41,44 @@ const ViewDocument = () => {
       const result = await response.text();
 
       const responseData = decryptData(result);
+
       if (responseData?.success) {
         setReportFile(responseData?.data?.ReportPath ?? "");
+        console.log("asdfasfdasfdasd", responseData?.data?.ReportPath ?? "");
+        sessionStorage.setItem(
+          "xYz123!@#d",
+          encryptData(
+            JSON.stringify({
+              docData: responseData?.data?.ReportPath ?? "",
+            })
+          )
+        );
         setLoading(false);
       }
     } catch (error) {
       console.error("Error making POST request:", error);
+      if (!navigator.onLine) {
+        const storedData = sessionStorage.getItem("xYz123!@#d");
+        if (storedData) {
+          const decryptedData = JSON.parse(decryptData(storedData));
+          setReportFile(decryptedData?.docData ?? "");
+        } else {
+          console.warn("No data found in session storage.");
+        }
+      }
       setLoading(false);
       // throw new Error("Somethings went wrong");
     }
   }, []);
+  // console.log(
+  //   "sesssss",
+  //   JSON.parse(decryptData())
+  // );
+
   useEffect(() => {
     getReportDetails();
   }, [getReportDetails]);
 
-  console.log(getDecryptedPDFForJWT(reportFile));
-  // useEffect(() => {
-  //   const pdfUrl = getDecryptedPDFForJWT(reportFile); // Replace with your PDF URL
-  //   if (!pdfUrl) return;
-  //   window.open(pdfUrl, "_blank");
-  // }, [reportFile]);
   return (
     <>
       {loading ? (

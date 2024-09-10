@@ -7,10 +7,14 @@ import Container from "@mui/material/Container";
 import { FormControl, Stack } from "@mui/material";
 import "./auth.css";
 import { useNavigate } from "react-router-dom";
-import ResponsiveImage from "../../components/Logo";
+// import ResponsiveImage from "../../components/Logo";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ResponsiveImage from "../../components/logo";
+import encryptData from "../../helpers/encryption";
+import decryptData from "../../helpers/decryption";
+import toast from "react-hot-toast";
 
-const numberOfDigits = 4;
+const numberOfDigits = 6;
 export default function VerifyMobile() {
   const navigate = useNavigate();
 
@@ -113,13 +117,47 @@ export default function VerifyMobile() {
     }
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    console.log("dasfdasfdasdfas", otp.join(""));
+    // console.log();
+
+    // debugger;
+    const body = {
+      MobileNumber: decryptData(sessionStorage.getItem("userInfo")), //TODO
+      UserOTP: otp.join(""),
+    };
+    // debugger;
+
+    try {
+      const encryptedData = encryptData(body);
+
+      const response = await fetch("/BoardMeetingApi/api/OTP/AuthenticateOTP", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
+        },
+        body: encryptedData,
+      });
+
+      const result = await response.text();
+
+      const responseData = decryptData(result);
+
+      console.log("responseData", responseData);
+      if (responseData?.success) {
+        toast.success(responseData?.message);
+        navigate("/boardmeeting/forgot-password");
+        sessionStorage.removeItem("userInfo");
+      } else {
+        toast.error(responseData?.message);
+      }
+    } catch (error) {
+      console.error("Error making POST request:", error);
+      toast.error("Something went wrong");
+    }
+    // setSubmitting(false);
   };
 
   useEffect(() => {
@@ -183,7 +221,7 @@ export default function VerifyMobile() {
                           justifyContent="space-between"
                           sx={{
                             maxWidth: {
-                              xs: "300px", // For small screens
+                              // xs: "300px", // For small screens
                               lg: "100%", // For large screens and above, no maxWidth
                             },
                             margin: {
@@ -225,7 +263,7 @@ export default function VerifyMobile() {
                           marginBottom: "-12px",
                         }}
                       >
-                        {!showTimer ? (
+                        {/* {!showTimer ? (
                           <Button
                             sx={{ border: "1px solid " }}
                             onClick={() => {
@@ -237,7 +275,7 @@ export default function VerifyMobile() {
                           </Button>
                         ) : (
                           <Typography variant="p">{formattedTimer}</Typography>
-                        )}
+                        )} */}
                       </Box>
                       <Box
                         sx={{
@@ -264,14 +302,17 @@ export default function VerifyMobile() {
                             },
                             "&:focus": { border: "none", outline: "none" },
                           }}
-                          onClick={() => navigate("/boardmeeting/sign-in")}
+                          onClick={() => navigate("/boardmeeting/enter-mobile")}
                         >
                           Cancel
                         </Button>
 
                         <Button
                           fullWidth
-                          onClick={() => navigate("/boardmeeting")}
+                          // onClick={() =>
+                          //   // navigate("/boardmeeting/forgot-password")
+                          // }
+                          onClick={handleSubmit}
                           variant="contained"
                           sx={{
                             backgroundColor: "primary.main",

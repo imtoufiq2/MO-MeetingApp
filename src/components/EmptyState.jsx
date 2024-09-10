@@ -1,19 +1,23 @@
 import PropTypes from "prop-types";
 import { Typography, Container } from "@mui/material";
+import { useGlobalHook } from "../Contexts";
 
 const EmptyState = ({
   title = "No results found",
   subTitle = "Sorry, but your search returned no results",
 }) => {
+  const { darkMode } = useGlobalHook();
+
   return (
     <Container
+      id="_empty_main_container"
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         minHeight: "240px",
-        bgcolor: "background.paper",
+        bgcolor: darkMode ? "#343332" : "background.paper",
         textAlign: "center",
         // border: "1px solid",
         borderColor: "#D7DFE9",

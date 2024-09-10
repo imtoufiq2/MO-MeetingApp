@@ -1,17 +1,43 @@
 import PropTypes from "prop-types";
-import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+  Box,
+  // Button,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Pagination,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import EmptyState from "./EmptyState";
 import DateDisplay from "./dateDisplay/DateDisplay";
 import getTimeFromDateTime from "../helpers/timeFromDateTime";
 import getDateDetails from "../helpers/getDateDetails";
+import { useState } from "react";
+import { useGlobalHook } from "../Contexts";
 
 export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
   const navigate = useNavigate();
+  const { darkMode } = useGlobalHook();
+
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 10;
+
   const handleSearchChange = (query) => {
     setSearchQuery(query.toLowerCase());
   };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the items to show on the current page
+  const paginatedList = listToShow.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
   return (
     <Box
       sx={{
@@ -38,22 +64,25 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
           flexDirection: "column",
         }}
       >
-        {console.log(
-          "value is ",
-          listToShow.length,
-          searchQuery !== "",
-          searchQuery?.length
-        )}
-        {listToShow.length === 0 &&
+        {paginatedList.length === 0 &&
         (searchQuery !== "" || searchQuery === "") ? (
           <EmptyState />
         ) : (
-          listToShow?.map((item) => (
+          paginatedList?.map((item) => (
             <ListItem
               onClick={() =>
                 navigate(`/boardmeeting/reports/${item.MeetingID ?? 0}`)
               }
               key={item.id}
+              style={{
+                boxShadow:
+                  darkMode &&
+                  `
+                0px 2px 1px -1px rgba(249, 175, 41, 0.2),
+                0px 1px 1px 0px rgba(249, 175, 41, 0.14),
+                0px 1px 3px 0px rgba(249, 175, 41, 0.12)
+              `,
+              }}
               sx={{
                 display: "flex",
                 alignItems: "flex-start", // Align to the top
@@ -64,7 +93,9 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                 },
                 borderRadius: "8px",
                 overflow: "hidden",
-                bgcolor: "background.paper",
+                // bgcolor: "background.paper",
+                bgcolor: darkMode ? "#343332" : "background.paper",
+
                 margin: "4px 0",
                 paddingRight: "12px",
                 paddingLeft: "5px",
@@ -90,18 +121,6 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                   monthTorender={getDateDetails(item?.MeetingDate)?.month ?? 0}
                   yearToRender={getDateDetails(item?.MeetingDate)?.year ?? 0}
                 />
-                {/* <Typography
-                  variant="body2"
-                  sx={{
-                    whiteSpace: "nowrap",
-                    fontSize: "12px",
-                    color: "gray",
-                    marginTop: "8px",
-                    margin: "auto",
-                  }}
-                >
-                  {getDateDetails(item?.MeetingDate)?.year ?? 0}
-                </Typography> */}
               </Box>
               <ListItemText
                 primary={
@@ -112,6 +131,7 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                       fontSize: {
                         xs: "16px",
                         lg: "18px",
+                        color: darkMode && "#ffae18",
                       },
                       letterSpacing: "-0.3px",
                       fontWeight: "500",
@@ -135,6 +155,7 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
                       justifyContent: "space-between",
                       flexWrap: "wrap",
                       gap: "4px",
+                      color: darkMode && "#fff",
                     }}
                   >
                     <Typography variant="body2">
@@ -150,6 +171,28 @@ export const MuiListMeeting = ({ listToShow, setSearchQuery, searchQuery }) => {
           ))
         )}
       </List>
+      {/* Pagination Component */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "16px",
+        }}
+      >
+        <Pagination
+          count={Math.ceil(listToShow.length / itemsPerPage)}
+          page={page}
+          onChange={handlePageChange}
+          variant="text"
+          shape="rounded"
+          color="primary"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: darkMode ? "White" : "black",
+            },
+          }}
+        />
+      </Box>
     </Box>
   );
 };

@@ -63,7 +63,7 @@ const AssociatedCompanies = () => {
 
   const getDepartments = useCallback(async () => {
     const body = { committeid: "20" };
-    console.log("hellasdas12");
+
     // return;
     try {
       setLoading(true);
@@ -90,7 +90,7 @@ const AssociatedCompanies = () => {
       const result = await response.text();
 
       const responseData = decryptData(result);
-
+      console.log("responseData", responseData?.data);
       if (responseData?.success) {
         // responseData?.data
         setAssociatedCompanies(groupDataByCompany(responseData?.data) ?? []);
@@ -101,6 +101,7 @@ const AssociatedCompanies = () => {
 
         setLoading(false);
       }
+      // console.log(sessionStorage.getItem())
     } catch (error) {
       console.error("Error making POST request:", error);
 
