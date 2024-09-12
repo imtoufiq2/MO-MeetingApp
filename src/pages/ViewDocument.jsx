@@ -44,7 +44,7 @@ const ViewDocument = () => {
 
       if (responseData?.success) {
         setReportFile(responseData?.data?.ReportPath ?? "");
-        console.log("asdfasfdasfdasd", responseData?.data?.ReportPath ?? "");
+        console.log("asdfasfdasfdasd", responseData ?? "");
         sessionStorage.setItem(
           "xYz123!@#d",
           encryptData(
@@ -96,21 +96,6 @@ const ViewDocument = () => {
             setSearchQuery={() => {}}
           />
 
-          {/* <Box
-            className="poppins"
-            sx={{
-              minHeight: "100vh",
-              overflow: "hidden",
-              maxWidth: "592px",
-              margin: "auto",
-              border: "2px dotted red",
-              // marginTop: {
-              //   lg: "24px",
-              // },
-            }}
-          >
-
-          </Box> */}
           <PdfViewer pdfUrl={getDecryptedPDFForJWT(reportFile)} />
         </Box>
       )}

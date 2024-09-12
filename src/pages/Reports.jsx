@@ -64,6 +64,7 @@ const Reports = () => {
       const result = await response.text();
 
       const responseData = decryptData(result);
+      console.log({ responseData });
       if (responseData?.success) {
         setReportsData(responseData?.data);
         sessionStorage.setItem(

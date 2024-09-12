@@ -62,12 +62,13 @@ const AssociatedCompanies = () => {
   }, []);
 
   const getDepartments = useCallback(async () => {
-    const body = { committeid: "20" };
+    const body = { committeid: "20" }; //TODO :this is static data, confirm it
 
     // return;
     try {
       setLoading(true);
       const encryptedData = encryptData(body);
+      // debugger;
       const response = await fetch(
         "/BoardMeetingApi/api/Meeting/Getcommittee",
         {

@@ -15,11 +15,9 @@ import Reports from "../pages/Reports";
 import ViewDocument from "../pages/ViewDocument";
 import { ErrorBoundary } from "react-error-boundary";
 import SomethingWentWrong from "../components/SomethingWentWrong";
-// import FaceAuth from "../pages/FaceAuth";
 import EnterMobile from "../pages/auth/enter-mobile";
 import AuthGuard from "../utils/AuthGuard";
 import FloatingFooterAction from "../components/floatingFooterAction";
-// import Rough from "../pages/Rough";
 
 const Routers = () => {
   // const [isOnline, setIsOnline] = useState(navigator.onLine);

@@ -56,3 +56,47 @@ input:-webkit-autofill:active {
 border: none !important;
 outline: none !important;
 }
+
+
+
+/* Dark mode styles for PDF Viewer */
+.pdf-dark-mode .rpv-core__viewer {
+  background-color: #343332; /* Dark background */
+}
+
+.pdf-dark-mode .rpv-core__page-layer {
+  filter: invert(1) hue-rotate(180deg); /* Inverts and adjusts colors for content */
+}
+
+.pdf-dark-mode .rpv-core__text-layer {
+  color: white !important; /* Ensures text is visible */
+}
+
+.pdf-dark-mode .rpv-core__annotation-layer {
+  mix-blend-mode: difference; /* Adjusts annotations for better contrast */
+}
+
+
+/* this is to remvoe the scrollbar in the commet section */
+.example::-webkit-scrollbar {
+  display: none;
+}
+
+.example {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+#_box_submit .MuiFormControl-root.MuiFormControl-marginNormal.MuiFormControl-fullWidth.MuiTextField-root.css-17vbkzs-MuiFormControl-root-MuiTextField-root{
+margin-top: 0 !important;
+margin-bottom: 0 !important;
+}
+
+#_input_filed.MuiInputBase-input.MuiOutlinedInput-input.css-1042tfe-MuiInputBase-input-MuiOutlinedInput-input{
+padding: 8px !important;
+border-radius: 6px !important;
+
+}
+
+
+

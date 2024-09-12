@@ -24,6 +24,8 @@ export default function FloatingFooterAction() {
     location?.pathname.includes(path)
   );
 
+  console.log("location data", location.pathname);
+
   return (
     <>
       <div id="_spacing" style={{ height: "56px" }} />
@@ -72,6 +74,7 @@ export default function FloatingFooterAction() {
         >
           <BottomNavigationAction
             sx={{ display: hidePrivateIcon ? "none" : "flex" }}
+            style={{ border: "none", outline: "none" }}
             label="Logout"
             onClick={() => {
               navigate("/boardmeeting/sign-in");
@@ -81,15 +84,30 @@ export default function FloatingFooterAction() {
           />
           <BottomNavigationAction
             // label="Favorites"
-            sx={{ display: hidePrivateIcon ? "none" : "flex" }}
+            id="_home_nav_button"
+            onClick={() => navigate("/boardmeeting/companies")}
+            disabled={location.pathname === "/boardmeeting/companies"}
+            sx={{
+              display: hidePrivateIcon ? "none" : "flex",
+              border: "none",
+              outline: "none",
+            }}
             icon={
-              <Fab color="primary" aria-label="add">
+              <Fab
+                id="_home_nav_button_fab"
+                color="primary"
+                aria-label="add"
+                style={{ border: "none", outline: "none" }}
+                disabled={location.pathname === "/boardmeeting/companies"}
+              >
                 <HomeRoundedIcon />
               </Fab>
             }
           />
 
           <BottomNavigationAction
+            id="_button_dark"
+            style={{ border: "none", outline: "none" }}
             label={`${darkMode ? "Light mode" : "Dark mode"}`}
             onClick={() => toggleDarkMode(!darkMode)}
             icon={<Brightness4RoundedIcon />}

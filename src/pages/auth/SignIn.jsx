@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -30,13 +30,44 @@ export default function SignIn() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const handleSendOtp = useCallback(
+    async (mobilNo) => {
+      const body = {
+        MobileNumber: String(mobilNo),
+      };
+
+      try {
+        const encryptedData = encryptData(body);
+        const response = await fetch("/BoardMeetingApi/api/OTP/GenerateOTP", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
+          },
+          body: encryptedData,
+        });
+
+        const result = await response.text();
+
+        const responseData = decryptData(result);
+        if (responseData?.success && responseData?.message === "Successful.") {
+          navigate("/boardmeeting/verify-otp");
+        } else {
+          toast.error(responseData?.message || "something went wrong");
+        }
+      } catch (error) {
+        console.error("Error making POST request:", error);
+        toast.error("Something went wrong");
+      }
+    },
+    [navigate]
+  );
   const handleGet2FASetting = useCallback(
-    async (Input) => {
+    async (Input, mobileNumber) => {
       try {
         const encryptedData = encryptData({
           Input,
         });
-        // debugger;
         const response = await fetch(
           "/BoardMeetingApi/api/Login/Get2FASetting",
           {
@@ -51,12 +82,12 @@ export default function SignIn() {
 
         const result = await response.text();
         const responseData = decryptData(result);
-        console.log("daasdfasdasss", responseData?.data);
         if (
           responseData?.success &&
           responseData?.data?.[0]?.TwoFactorEnable === "Yes"
         ) {
-          // console.log("daasdfasda", responseData); call the send otp
+          sessionStorage.setItem("requires2FA", "true");
+          await handleSendOtp(mobileNumber);
         } else {
           navigate("/boardmeeting/companies");
           // resetForm();
@@ -66,12 +97,10 @@ export default function SignIn() {
         toast.error("Something went wrong");
       }
     },
-    [navigate]
+    [handleSendOtp, navigate]
   );
 
-  const handleSubmit = async (values, { resetForm, setSubmitting }) => {
-    console.log("values is", values);
-
+  const handleSubmit = async (values, { setSubmitting }) => {
     const body = {
       iPadId: "B9952D24-61A4-4D7F-8302-4702B5387BD5",
       authType: "client_credentials",
@@ -96,6 +125,7 @@ export default function SignIn() {
 
       const result = await response.text();
       const responseData = decryptData(result);
+
       if (responseData?.success) {
         sessionStorage.setItem("loginData", JSON.stringify(responseData?.data));
         sessionStorage.setItem(
@@ -103,12 +133,11 @@ export default function SignIn() {
           encryptData(
             JSON.stringify({
               clientCode: values?.email,
-              // password: values?.password,
             })
           )
         );
         // call two auth api here
-        await handleGet2FASetting(values?.email);
+        await handleGet2FASetting(values?.email, responseData?.data?.MobileNo);
         // navigate("/boardmeeting/companies");
         // resetForm();
       } else if (responseData?.message) {
@@ -128,6 +157,9 @@ export default function SignIn() {
     password: Yup.string().required("Password is required"),
   });
 
+  useEffect(() => {
+    sessionStorage.removeItem("requires2FA");
+  }, []);
   return (
     <Box
       className="poppins"

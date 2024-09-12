@@ -84,10 +84,10 @@ const Meetings = () => {
       const result = await response.text();
 
       const responseData = decryptData(result);
-      // console.log(
-      //   "responseData",
-      //   sortMeetingsByDateAndTimeDesc(responseData?.data)
-      // );
+      console.log(
+        "responseData",
+        sortMeetingsByDateAndTimeDesc(responseData?.data)
+      );
       if (responseData?.success) {
         setMeetingsData(
           sortMeetingsByDateAndTimeDesc(responseData?.data) ?? []

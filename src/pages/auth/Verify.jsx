@@ -33,39 +33,14 @@ export default function VerifyMobile() {
         if (index < numberOfDigits - 1) {
           otpBoxReference.current[index + 1].focus();
         }
-      } else {
-        // toast("Please enter exactly 6 digits for the OTP", {
-        //   icon: "⚠️",
-        //   iconTheme: {
-        //     primary: "#FFA500",
-        //     secondary: "#000000",
-        //   },
-        //   style: {
-        //     borderRadius: "10px",
-        //     background: "#FFA500",
-        //     color: "#fff",
-        //   },
-        // });
       }
-    } else {
-      // toast("Please enter only numeric characters for the OTP", {
-      //   icon: "⚠️",
-      //   iconTheme: {
-      //     primary: "#FFA500",
-      //     secondary: "#000000",
-      //   },
-      //   style: {
-      //     borderRadius: "10px",
-      //     background: "#FFA500",
-      //     color: "#fff",
-      //   },
-      // });
     }
   }
 
   const [timer, setTimer] = useState(10);
   const [showTimer, setShowTimer] = useState(true);
 
+  // eslint-disable-next-line no-unused-vars
   const formattedTimer = useMemo(() => {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
@@ -119,15 +94,24 @@ export default function VerifyMobile() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("dasfdasfdasdfas", otp.join(""));
-    // console.log();
 
-    // debugger;
+    // const body = {
+    //   MobileNumber: sessionStorage.getItem("requires2FA") ?  JSON.parse(sessionStorage.getItem("loginData"))?.MobileNo ||
+    //     decryptData(sessionStorage.getItem("userInfo")),
+    //   UserOTP: otp.join(""),
+    // };
+    const loginData = sessionStorage.getItem("loginData")
+      ? JSON.parse(sessionStorage.getItem("loginData"))
+      : null;
+
+    const mobileNumber = sessionStorage.getItem("requires2FA")
+      ? loginData?.MobileNo
+      : decryptData(sessionStorage.getItem("userInfo"))?.MobileNo;
+
     const body = {
-      MobileNumber: decryptData(sessionStorage.getItem("userInfo")), //TODO
+      MobileNumber: mobileNumber,
       UserOTP: otp.join(""),
     };
-    // debugger;
 
     try {
       const encryptedData = encryptData(body);
@@ -145,11 +129,15 @@ export default function VerifyMobile() {
 
       const responseData = decryptData(result);
 
-      console.log("responseData", responseData);
       if (responseData?.success) {
         toast.success(responseData?.message);
-        navigate("/boardmeeting/forgot-password");
-        sessionStorage.removeItem("userInfo");
+        if (sessionStorage.getItem("requires2FA")) {
+          navigate("/boardmeeting/companies");
+          sessionStorage.removeItem("requires2FA");
+        } else {
+          navigate("/boardmeeting/forgot-password");
+          sessionStorage.removeItem("userInfo");
+        }
       } else {
         toast.error(responseData?.message);
       }
@@ -309,9 +297,6 @@ export default function VerifyMobile() {
 
                         <Button
                           fullWidth
-                          // onClick={() =>
-                          //   // navigate("/boardmeeting/forgot-password")
-                          // }
                           onClick={handleSubmit}
                           variant="contained"
                           sx={{

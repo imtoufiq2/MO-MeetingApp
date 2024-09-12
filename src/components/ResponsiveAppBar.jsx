@@ -196,10 +196,14 @@ export default function SearchAppBar({
                 {title}
               </Typography>
             </Stack>
-            {/* <Brightness4OutlinedIcon
-              sx={{ cursor: "pointer" }}
-              onClick={() => toggleDarkMode(!darkMode)}
-            /> */}
+
+            {/* <Typography variant="h6" noWrap component="div">
+              {JSON.parse(sessionStorage.getItem("loginData"))?.username?.trim()
+                ? JSON.parse(
+                    sessionStorage.getItem("loginData")
+                  ).username.split(" ")[0]
+                : ""}
+            </Typography> */}
           </Stack>
 
           <Search
